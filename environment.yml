@@ -1,7 +1,7 @@
 name: segmentation
 channels:
-  - pytorch
   - plotly
+  - pytorch
   - conda-forge
   - defaults
 dependencies:
@@ -63,6 +63,7 @@ dependencies:
   - gitpython=3.1.29=pyhd8ed1ab_0
   - identify=2.5.10=pyhd8ed1ab_0
   - idna=3.4=pyhd8ed1ab_0
+  - ignite=0.4.10=py_0
   - imagecodecs-lite=2019.12.3=py38h26c90d9_6
   - intel-openmp=2021.4.0=h06a4308_3561
   - ipykernel=6.19.2=pyh210e3f2_0
@@ -182,6 +183,7 @@ dependencies:
   - tomli=2.0.1=pyhd8ed1ab_0
   - tomlkit=0.11.6=pyha770c72_0
   - toolz=0.12.0=pyhd8ed1ab_0
+  - torchmetrics=0.9.3=pyhd8ed1ab_0
   - torchvision=0.8.2=py38_cu110
   - tornado=6.1=py38h0a891b7_3
   - tqdm=4.64.1=pyhd8ed1ab_0

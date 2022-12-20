@@ -1,42 +1,81 @@
 name: segmentation
 channels:
   - pytorch
+  - plotly
   - conda-forge
   - defaults
 dependencies:
   - _ipython_minor_entry_point=8.7.0=h3b92ee0_0
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_kmp_llvm
+  - astroid=2.12.13=py38h578d9bd_0
   - asttokens=2.2.1=pyhd8ed1ab_0
   - backcall=0.2.0=pyh9f0ad1d_0
   - backports=1.0=pyhd8ed1ab_3
   - backports.functools_lru_cache=1.6.4=pyhd8ed1ab_0
+  - bandit=1.7.4=py38h578d9bd_2
+  - black=22.10.0=py38h578d9bd_2
   - blas=1.0=mkl
   - bottleneck=1.3.5=py38h7deecbd_0
+  - brotli-python=1.0.9=py38hfa26641_7
+  - brotlipy=0.7.0=py38h0a891b7_1005
   - ca-certificates=2022.12.7=ha878542_0
   - certifi=2022.12.7=pyhd8ed1ab_0
+  - cffi=1.15.1=py38h4a40e3a_3
+  - cfgv=3.3.1=pyhd8ed1ab_0
+  - charset-normalizer=2.1.1=pyhd8ed1ab_0
+  - click=8.1.3=unix_pyhd8ed1ab_2
+  - cloudpickle=2.2.0=pyhd8ed1ab_0
   - colorama=0.4.6=pyhd8ed1ab_0
   - comm=0.1.2=pyhd8ed1ab_0
+  - commonmark=0.9.1=py_0
+  - cryptography=38.0.4=py38h2b5fc30_0
   - cudatoolkit=11.0.221=h6bb024c_0
   - cycler=0.11.0=pyhd8ed1ab_0
   - cython=0.29.32=py38h6a678d5_0
+  - cytoolz=0.12.0=py38h0a891b7_1
+  - dash=2.7.1=pyhd8ed1ab_0
+  - dash-core-components=2.0.0=pyhd8ed1ab_1
+  - dash-html-components=2.0.0=pyhd8ed1ab_1
+  - dash-table=5.0.0=pyhd8ed1ab_1
+  - dask-core=2022.12.1=pyhd8ed1ab_0
+  - dataclasses=0.8=pyhc8e2a94_3
   - debugpy=1.5.1=py38h295c915_0
   - decorator=5.1.1=pyhd8ed1ab_0
+  - dill=0.3.6=pyhd8ed1ab_1
+  - distlib=0.3.6=pyhd8ed1ab_0
+  - docker-pycreds=0.4.0=py_0
   - efficientnet-pytorch=0.7.1=pyhd8ed1ab_1
   - entrypoints=0.4=pyhd8ed1ab_0
+  - enum34=1.1.10=py38h32f6830_2
   - executing=1.2.0=pyhd8ed1ab_0
   - fftw=3.3.10=nompi_h77c792f_102
+  - filelock=3.8.2=pyhd8ed1ab_0
+  - flake8=6.0.0=pyhd8ed1ab_0
+  - flask=2.2.2=pyhd8ed1ab_0
+  - flask-compress=1.13=pyhd8ed1ab_0
   - flit-core=3.6.0=pyhd3eb1b0_0
   - freetype=2.12.1=h4a9f257_0
+  - fsspec=2022.11.0=pyhd8ed1ab_0
+  - future=0.18.2=pyhd8ed1ab_6
   - giflib=5.2.1=h7b6447c_0
+  - gitdb=4.0.10=pyhd8ed1ab_0
+  - gitpython=3.1.29=pyhd8ed1ab_0
+  - identify=2.5.10=pyhd8ed1ab_0
+  - idna=3.4=pyhd8ed1ab_0
+  - imagecodecs-lite=2019.12.3=py38h26c90d9_6
   - intel-openmp=2021.4.0=h06a4308_3561
   - ipykernel=6.19.2=pyh210e3f2_0
   - ipython=8.7.0=pyh41d4057_0
+  - isort=5.11.3=pyhd8ed1ab_0
+  - itsdangerous=2.1.2=pyhd8ed1ab_0
   - jedi=0.18.2=pyhd8ed1ab_0
+  - jinja2=3.1.2=pyhd8ed1ab_1
   - jpeg=9b=h024ee3a_2
   - jupyter_client=7.0.6=pyhd8ed1ab_0
   - jupyter_core=5.1.0=py38h578d9bd_0
   - kiwisolver=1.4.2=py38h295c915_0
+  - lazy-object-proxy=1.8.0=py38h0a891b7_0
   - lcms2=2.12=h3be6417_0
   - ld_impl_linux-64=2.38=h1181459_1
   - libffi=3.4.2=h6a678d5_6
@@ -44,24 +83,32 @@ dependencies:
   - libgfortran-ng=12.2.0=h69a702a_19
   - libgfortran5=12.2.0=h337968e_19
   - libpng=1.6.37=hbc83047_0
+  - libprotobuf=3.20.1=h4ff587b_0
   - libsodium=1.0.18=h36c2ea0_1
   - libstdcxx-ng=11.2.0=h1234567_1
   - libtiff=4.1.0=h2733197_1
   - libuv=1.40.0=h7b6447c_0
   - libwebp=1.2.0=h89dd481_0
   - llvm-openmp=14.0.6=h9e868ea_0
+  - locket=1.0.0=pyhd8ed1ab_0
   - lz4-c=1.9.4=h6a678d5_0
+  - markupsafe=2.1.1=py38h0a891b7_2
   - matplotlib-base=3.4.3=py38hf4fb855_1
   - matplotlib-inline=0.1.6=pyhd8ed1ab_0
+  - mccabe=0.7.0=pyhd8ed1ab_0
   - mkl=2021.4.0=h06a4308_640
   - mkl-service=2.4.0=py38h7f8727e_0
   - mkl_fft=1.3.1=py38hd3c417c_0
   - mkl_random=1.2.2=py38h51133e4_0
   - munch=2.5.0=py_0
+  - mypy=0.991=py38h0a891b7_0
+  - mypy_extensions=0.4.3=py38h578d9bd_6
   - ncurses=6.3=h5eee18b_3
   - nest-asyncio=1.5.6=pyhd8ed1ab_0
+  - networkx=2.8.8=pyhd8ed1ab_0
   - ninja=1.10.2=h06a4308_5
   - ninja-base=1.10.2=hd09550d_5
+  - nodeenv=1.7.0=pyhd8ed1ab_0
   - numexpr=2.8.4=py38he184ba9_0
   - numpy=1.23.4=py38h14f4228_0
   - numpy-base=1.23.4=py38h31eccc5_0
@@ -69,61 +116,146 @@ dependencies:
   - packaging=22.0=pyhd8ed1ab_0
   - pandas=1.5.2=py38h417a72b_0
   - parso=0.8.3=pyhd8ed1ab_0
+  - partd=1.3.0=pyhd8ed1ab_0
+  - pathlib=1.0.1=py38h578d9bd_7
+  - pathspec=0.10.3=pyhd8ed1ab_0
+  - pathtools=0.1.2=py_1
   - patsy=0.5.3=pyhd8ed1ab_0
+  - pbr=5.11.0=pyhd8ed1ab_0
   - pexpect=4.8.0=pyh1a96a4e_2
   - pickleshare=0.7.5=py_1003
   - pillow=9.2.0=py38hace64e9_1
   - pip=22.3.1=py38h06a4308_0
   - platformdirs=2.6.0=pyhd8ed1ab_0
+  - plotly=5.11.0=py_0
+  - plotly_express=0.4.1=py_0
+  - pre-commit=2.20.0=py38h578d9bd_1
   - pretrainedmodels=0.7.4=pyhd8ed1ab_2
+  - promise=2.3=py38h578d9bd_7
   - prompt-toolkit=3.0.36=pyha770c72_0
+  - protobuf=3.20.1=py38h295c915_0
   - psutil=5.9.0=py38h5eee18b_0
   - ptyprocess=0.7.0=pyhd3deb0d_0
   - pure_eval=0.2.2=pyhd8ed1ab_0
   - pycocotools=2.0.6=py38h26c90d9_1
+  - pycodestyle=2.10.0=pyhd8ed1ab_0
+  - pycparser=2.21=pyhd8ed1ab_0
+  - pydocstyle=6.1.1=pyhd8ed1ab_0
+  - pyflakes=3.0.1=pyhd8ed1ab_0
   - pygments=2.13.0=pyhd8ed1ab_0
+  - pylama=7.7.1=py_0
+  - pylint=2.15.9=pyhd8ed1ab_0
+  - pyopenssl=22.1.0=pyhd8ed1ab_0
   - pyparsing=3.0.9=pyhd8ed1ab_0
+  - pysocks=1.7.1=pyha2e5f31_6
   - python=3.8.15=h7a1cb2a_2
   - python-dateutil=2.8.2=pyhd8ed1ab_0
   - python_abi=3.8=2_cp38
   - pytorch=1.7.1=py3.8_cuda11.0.221_cudnn8.0.5_0
   - pytz=2022.7=pyhd8ed1ab_0
+  - pyyaml=6.0=py38h0a891b7_5
   - pyzmq=19.0.2=py38ha71036d_2
   - readline=8.2=h5eee18b_0
+  - requests=2.28.1=pyhd8ed1ab_1
+  - rich=12.6.0=pyhd8ed1ab_0
+  - scikit-image=0.19.3=py38h6a678d5_1
   - scipy=1.9.3=py38h14f4228_0
   - seaborn=0.12.1=hd8ed1ab_0
   - seaborn-base=0.12.1=pyhd8ed1ab_0
   - segmentation-models-pytorch=0.3.1=pyhd8ed1ab_0
+  - sentry-sdk=1.12.1=pyhd8ed1ab_0
+  - setproctitle=1.3.2=py38h0a891b7_1
   - setuptools=65.5.0=py38h06a4308_0
+  - shellingham=1.5.0=pyhd8ed1ab_0
+  - shortuuid=1.0.11=pyhd8ed1ab_0
   - six=1.16.0=pyhd3eb1b0_1
+  - smmap=3.0.5=pyh44b312d_0
+  - snowballstemmer=2.2.0=pyhd8ed1ab_0
   - sqlite=3.40.0=h5082296_0
   - stack_data=0.6.2=pyhd8ed1ab_0
   - statsmodels=0.13.5=py38h26c90d9_2
+  - stevedore=4.1.1=pyhd8ed1ab_0
+  - tenacity=8.0.1=py38h06a4308_1
   - timm=0.4.12=pyhd8ed1ab_0
   - tk=8.6.12=h1ccaba5_0
+  - toml=0.10.2=pyhd8ed1ab_0
+  - tomli=2.0.1=pyhd8ed1ab_0
+  - tomlkit=0.11.6=pyha770c72_0
+  - toolz=0.12.0=pyhd8ed1ab_0
   - torchvision=0.8.2=py38_cu110
   - tornado=6.1=py38h0a891b7_3
   - tqdm=4.64.1=pyhd8ed1ab_0
   - traitlets=5.7.1=pyhd8ed1ab_0
+  - typer=0.7.0=pyhd8ed1ab_0
+  - typing=3.10.0.0=pyhd8ed1ab_0
+  - typing-extensions=4.4.0=py38h06a4308_0
   - typing_extensions=4.4.0=py38h06a4308_0
+  - ukkonen=1.0.1=py38h43d8883_2
+  - urllib3=1.26.13=pyhd8ed1ab_0
+  - virtualenv=20.17.1=py38h578d9bd_0
+  - wandb=0.13.7=pyhd8ed1ab_0
   - wcwidth=0.2.5=pyh9f0ad1d_2
   - webcolors=1.12=pyhd8ed1ab_0
+  - werkzeug=2.2.2=pyhd8ed1ab_0
   - wheel=0.37.1=pyhd3eb1b0_0
+  - wrapt=1.14.1=py38h0a891b7_1
   - xz=5.2.8=h5eee18b_0
+  - yaml=0.2.5=h7f98852_2
   - zeromq=4.3.4=h9c3ff4c_1
+  - zipp=3.11.0=pyhd8ed1ab_0
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.4.9=haebb681_0
   - pip:
     - albumentations==1.3.0
+    - altair==4.2.0
+    - attrs==22.1.0
+    - backports-zoneinfo==0.2.1
+    - blinker==1.5
+    - cachecontrol==0.12.11
+    - cachetools==5.2.0
+    - cleo==2.0.1
+    - crashtest==0.4.1
+    - dulwich==0.20.50
+    - html5lib==1.1
     - imageio==2.23.0
+    - importlib-metadata==4.13.0
+    - importlib-resources==5.10.1
+    - jaraco-classes==3.2.3
+    - jeepney==0.8.0
     - joblib==1.2.0
-    - networkx==2.8.8
+    - jsonschema==4.17.3
+    - keyring==23.13.1
+    - lockfile==0.12.2
+    - more-itertools==9.0.0
+    - msgpack==1.0.4
     - opencv-python-headless==4.6.0.66
+    - pkginfo==1.9.2
+    - pkgutil-resolve-name==1.3.10
+    - poetry==1.3.1
+    - poetry-core==1.4.0
+    - poetry-plugin-export==1.2.0
+    - pyarrow==10.0.1
+    - pydeck==0.8.0
+    - pympler==1.0.1
+    - pyrsistent==0.19.2
+    - pytz-deprecation-shim==0.1.0.post0
     - pywavelets==1.4.1
-    - pyyaml==6.0
     - qudida==0.0.4
-    - scikit-image==0.19.3
+    - rapidfuzz==2.13.6
+    - requests-toolbelt==0.10.1
     - scikit-learn==1.2.0
+    - secretstorage==3.3.3
+    - semver==2.13.0
+    - shapely==2.0.0
+    - streamlit==1.16.0
     - threadpoolctl==3.1.0
     - tifffile==2022.10.10
+    - torchtyping==0.1.4
+    - trove-classifiers==2022.12.1
+    - typeguard==2.13.3
+    - tzdata==2022.7
+    - tzlocal==4.2
+    - validators==0.20.0
+    - watchdog==2.2.0
+    - webencodings==0.5.1
 prefix: /opt/conda/envs/segmentation

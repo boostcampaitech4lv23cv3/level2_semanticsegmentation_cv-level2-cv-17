@@ -74,3 +74,5 @@ repos:
           - --extend-ignore=E203,E731
           # E203: Whitespace before ':' (black compatible config)
           # E731: Do not assign a lambda expression, use a def
+
+exclude: ^src/mmsegmentation

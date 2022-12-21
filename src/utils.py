@@ -4,7 +4,8 @@ Reference:
     https://github.com/wkentaro/pytorch-fcn/blob/master/torchfcn/utils.py
 """
 import numpy as np
-
+import torch
+import random
 
 def _fast_hist(label_true, label_pred, n_class):
     mask = (label_true >= 0) & (label_true < n_class)
@@ -70,3 +71,13 @@ def add_hist(hist, label_trues, label_preds, n_class):
 #     freq = hist.sum(axis=1) / hist.sum()
 #     fwavacc = (freq[freq > 0] * iu[freq > 0]).sum()
 #     return acc, acc_cls, mean_iu, fwavacc, iu
+
+def set_seed(random_seed=42):
+    # seed 고정
+    torch.manual_seed(random_seed)
+    torch.cuda.manual_seed(random_seed)
+    torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    np.random.seed(random_seed)
+    random.seed(random_seed)

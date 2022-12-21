@@ -72,11 +72,3 @@ repos:
         args:
           - --max-line-length=88
           - --extend-ignore=E203
-
-  - repo: https://github.com/pycqa/pylint
-    rev: pylint-2.6.0
-    hooks:
-      - id: pylint
-        args:
-          - --max-line-length=88
-          - --disable=E0401,C0116,R0913

@@ -12,8 +12,8 @@ from utils import add_hist, label_accuracy_score
 
 warnings.filterwarnings("ignore")
 
-print("pytorch version: {}".format(torch.__version__))
-print("GPU 사용 가능 여부: {}".format(torch.cuda.is_available()))
+print(f"pytorch version: {torch.__version__}")
+print(f"GPU 사용 가능 여부: {torch.cuda.is_available()}")
 
 n_class = 11
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -52,7 +52,7 @@ def parse_args():
 
 
 def save_model(model, saved_dir, file_name="fcn_resnet50_best_model(pretrained).pt"):
-    check_point = {"net": model.state_dict()}
+    # check_point = {"net": model.state_dict()}
     output_path = os.path.join(saved_dir, file_name)
     torch.save(model, output_path)
 
@@ -94,8 +94,8 @@ def validation(epoch, model, data_loader, criterion, device):
 
         avrg_loss = total_loss / cnt
         print(
-            f"Validation #{epoch}  Average Loss: {round(avrg_loss.item(), 4)}, Accuracy : {round(acc, 4)}, \
-                mIoU: {round(mIoU, 4)}"
+            f"Validation #{epoch}  Average Loss: {round(avrg_loss.item(), 4)}, \
+                Accuracy : {round(acc, 4)}, mIoU: {round(mIoU, 4)}"
         )
         print(f"IoU by class : {IoU_by_class}")
 

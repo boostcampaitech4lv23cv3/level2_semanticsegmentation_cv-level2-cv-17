@@ -1,36 +1,39 @@
+import argparse
+import json
 import os
 import os.path as osp
-import argparse
 import random
-import json
 
 import numpy as np
 import pandas as pd
-
-from tqdm import tqdm
 import torch
-
 from iterstrat.ml_stratifiers import MultilabelStratifiedKFold
+from tqdm import tqdm
+
 # pip install iterative-stratification : 라이브러리 설치
 
-data_path = '/opt/ml/input/data'            # 절대경로
+data_path = "/opt/ml/input/data"  # 절대경로
 annotations_path = osp.join(data_path, "train_all.json")
 
 # /opt/ml/input/data/stratified 경로에 생성됩니다.
+
 
 def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n_split", "-n", type=int, default=5)
-    parser.add_argument("--path", "-p", type=str, default='/opt/ml/input/data/stratified')
+    parser.add_argument(
+        "--path", "-p", type=str, default="/opt/ml/input/data/stratified"
+    )
     args = parser.parse_args()
     return args
+
 
 # seed 고정
 def set_seed(random_seed):
     torch.manual_seed(random_seed)
     torch.cuda.manual_seed(random_seed)
-    torch.cuda.manual_seed_all(random_seed) # if use multi-GPU
+    torch.cuda.manual_seed_all(random_seed)  # if use multi-GPU
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
     np.random.seed(random_seed)
@@ -42,7 +45,7 @@ def main(args):
     if not osp.exists(args.path):
         os.mkdir(args.path)
 
-    with open(annotations_path, "r") as f:
+    with open(annotations_path) as f:
         data = json.loads(f.read())
         images = data["images"]
         categories = data["categories"]
@@ -93,7 +96,7 @@ def main(args):
 
 def update_dataset(index, mode, input_json, output_dir):
 
-    with open(input_json, "r") as file:
+    with open(input_json) as file:
         data = json.load(file)
 
     images = data["images"]
@@ -126,7 +129,7 @@ def update_dataset(index, mode, input_json, output_dir):
     output_json = osp.join(output_dir, f"{mode}_fold{index}.json")
     with open(output_json, "w") as new_file:
         json.dump(new_data, new_file, indent=4)
-    
+
     print(f"update {output_json}")
 
 

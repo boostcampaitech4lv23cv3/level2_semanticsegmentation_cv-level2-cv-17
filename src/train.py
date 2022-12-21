@@ -11,7 +11,7 @@ import datetime
 
 from dataset import make_dataloader
 from network import define_network
-from utils import add_hist, label_accuracy_score
+from utils import add_hist, label_accuracy_score, set_seed
 
 warnings.filterwarnings("ignore")
 
@@ -194,6 +194,7 @@ def train(
 
 
 def main(args):
+    set_seed()
     model, criterion, optimizer = define_network(pretrained=True, learning_rate=args.lr)
     train_loader, val_loader, test_loader = make_dataloader(args.batch_size)
 

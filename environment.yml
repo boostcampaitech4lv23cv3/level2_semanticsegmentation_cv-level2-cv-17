@@ -247,6 +247,7 @@ dependencies:
       - imageio==2.23.0
       - importlib-metadata==4.13.0
       - importlib-resources==5.10.1
+      - iterative-stratification==0.1.7
       - jaraco-classes==3.2.3
       - jeepney==0.8.0
       - jmespath==1.0.1

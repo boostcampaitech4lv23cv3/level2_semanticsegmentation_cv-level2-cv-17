@@ -1,0 +1,84 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+        "editor.formatOnType": true
+    },
+    "black-formatter.args": [
+        "--color",
+        "--line-length=88",
+        "--target-version=py38"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": true
+    },
+    "editor.formatOnSave": true,
+    "editor.inlineSuggest.enabled": true,
+    "evenBetterToml.formatter.alignComments": true,
+    "evenBetterToml.formatter.alignEntries": true,
+    "evenBetterToml.formatter.allowedBlankLines": 1,
+    "evenBetterToml.formatter.arrayAutoCollapse": true,
+    "evenBetterToml.formatter.arrayAutoExpand": false,
+    "evenBetterToml.formatter.arrayTrailingComma": false,
+    "evenBetterToml.formatter.columnWidth": 1,
+    "evenBetterToml.formatter.compactArrays": true,
+    "evenBetterToml.formatter.reorderArrays": true,
+    "evenBetterToml.formatter.reorderKeys": true,
+    "evenBetterToml.formatter.trailingNewline": true,
+    "files.exclude": {
+        "**/.git": false
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "mmsegmentation/mmseg/*/**": false
+    },
+    "git.ignoreLimitWarning": true,
+    "isort.args": [
+        "--atomic",
+        "--color",
+        "--float-to-top",
+        "--profile=black",
+        "--py=38",
+        "--gitignore"
+    ],
+    "notebook.lineNumbers": "on",
+    "python.formatting.blackArgs": [
+        "--color",
+        "--line-length=88",
+        "--target-version=py38"
+    ],
+    "python.formatting.provider": "black",
+    "python.linting.banditEnabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=88",
+        "--extend-ignore=E203",
+        "--black-config=pyproject.toml"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.pycodestyleArgs": [
+        "--ignore=E203",
+        "--max-line-length=88"
+    ],
+    "python.linting.pycodestyleEnabled": true,
+    "python.linting.pydocstyleEnabled": true,
+    "python.linting.pylamaEnabled": true,
+    "python.linting.pylintArgs": [
+        "--disable=E0401,C0116,R0913",
+        "--max-line-length=88"
+    ],
+    "python.linting.pylintEnabled": true,
+    "python.sortImports.args": [
+        "--atomic",
+        "--color",
+        "--float-to-top",
+        "--profile=black",
+        "--py=38",
+        "--gitignore"
+    ],
+    "terminal.integrated.scrollback": 10000000
+}

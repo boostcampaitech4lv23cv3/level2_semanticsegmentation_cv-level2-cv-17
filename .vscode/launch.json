@@ -1,0 +1,29 @@
+{
+    "configurations": [
+        {
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "name": "Python: 현재 파일",
+            "program": "${file}",
+            "request": "launch",
+            "type": "python"
+        },
+        {
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "name": "train.py",
+            "program": "./src/train.py",
+            "request": "launch",
+            "type": "python"
+        },
+        {
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "name": "inference.py",
+            "program": "./src/inference.py",
+            "request": "launch",
+            "type": "python"
+        }
+    ],
+    "version": "0.1.0"
+}

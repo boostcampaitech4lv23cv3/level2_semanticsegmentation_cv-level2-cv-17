@@ -10,6 +10,7 @@ dependencies:
   - _openmp_mutex=4.5=2_kmp_llvm
   - astroid=2.12.13=py38h578d9bd_0
   - asttokens=2.2.1=pyhd8ed1ab_0
+  - autoflake=1.7.5=pyhd8ed1ab_0
   - backcall=0.2.0=pyh9f0ad1d_0
   - backports=1.0=pyhd8ed1ab_3
   - backports.functools_lru_cache=1.6.4=pyhd8ed1ab_0
@@ -154,6 +155,7 @@ dependencies:
   - python_abi=3.8=2_cp38
   - pytorch=1.7.1=py3.8_cuda11.0.221_cudnn8.0.5_0
   - pytz=2022.7=pyhd8ed1ab_0
+  - pyupgrade=3.3.1=pyhd8ed1ab_0
   - pyyaml=6.0=py38h0a891b7_5
   - pyzmq=19.0.2=py38ha71036d_2
   - readline=8.2=h5eee18b_0
@@ -179,6 +181,7 @@ dependencies:
   - tenacity=8.0.1=py38h06a4308_1
   - timm=0.4.12=pyhd8ed1ab_0
   - tk=8.6.12=h1ccaba5_0
+  - tokenize-rt=5.0.0=pyhd8ed1ab_0
   - toml=0.10.2=pyhd8ed1ab_0
   - tomli=2.0.1=pyhd8ed1ab_0
   - tomlkit=0.11.6=pyha770c72_0
@@ -208,101 +211,101 @@ dependencies:
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.4.9=haebb681_0
   - pip:
-    - aiofiles==22.1.0
-    - albumentations==1.3.0
-    - altair==4.2.0
-    - anyio==3.6.2
-    - argcomplete==2.0.0
-    - attrs==22.1.0
-    - backports-zoneinfo==0.2.1
-    - blinker==1.5
-    - boto3==1.26.33
-    - botocore==1.29.33
-    - cachecontrol==0.12.11
-    - cachetools==5.2.0
-    - cleo==2.0.1
-    - crashtest==0.4.1
-    - dacite==1.6.0
-    - deprecated==1.2.13
-    - dnspython==2.2.1
-    - dulwich==0.20.50
-    - eventlet==0.33.2
-    - fiftyone==0.18.0
-    - fiftyone-brain==0.9.2
-    - fiftyone-db==0.4.0
-    - glob2==0.7
-    - graphql-core==3.2.3
-    - greenlet==2.0.1
-    - h11==0.14.0
-    - h2==4.1.0
-    - hpack==4.0.0
-    - html5lib==1.1
-    - httpcore==0.16.2
-    - httpx==0.23.1
-    - hypercorn==0.14.3
-    - hyperframe==6.0.1
-    - imageio==2.23.0
-    - importlib-metadata==4.13.0
-    - importlib-resources==5.10.1
-    - jaraco-classes==3.2.3
-    - jeepney==0.8.0
-    - jmespath==1.0.1
-    - joblib==1.2.0
-    - jsonschema==4.17.3
-    - kaleido==0.2.1
-    - keyring==23.13.1
-    - lockfile==0.12.2
-    - mongoengine==0.24.2
-    - more-itertools==9.0.0
-    - motor==3.1.1
-    - msgpack==1.0.4
-    - ndjson==0.3.1
-    - opencv-python-headless==4.6.0.66
-    - patool==1.12
-    - pkginfo==1.9.2
-    - pkgutil-resolve-name==1.3.10
-    - poetry==1.3.1
-    - poetry-core==1.4.0
-    - poetry-plugin-export==1.2.0
-    - pprintpp==0.4.0
-    - priority==2.0.0
-    - pyarrow==10.0.1
-    - pydeck==0.8.0
-    - pymongo==4.3.3
-    - pympler==1.0.1
-    - pyrsistent==0.19.2
-    - pytz-deprecation-shim==0.1.0.post0
-    - pywavelets==1.4.1
-    - qudida==0.0.4
-    - rapidfuzz==2.13.6
-    - requests-toolbelt==0.10.1
-    - retrying==1.3.4
-    - rfc3986==1.5.0
-    - s3transfer==0.6.0
-    - scikit-learn==1.2.0
-    - secretstorage==3.3.3
-    - semver==2.13.0
-    - shapely==2.0.0
-    - sniffio==1.3.0
-    - sortedcontainers==2.4.0
-    - sse-starlette==0.10.3
-    - sseclient-py==1.7.2
-    - starlette==0.20.4
-    - strawberry-graphql==0.138.1
-    - streamlit==1.16.0
-    - tabulate==0.9.0
-    - threadpoolctl==3.1.0
-    - tifffile==2022.10.10
-    - torchtyping==0.1.4
-    - trove-classifiers==2022.12.1
-    - typeguard==2.13.3
-    - tzdata==2022.7
-    - tzlocal==4.2
-    - universal-analytics-python3==1.1.1
-    - validators==0.20.0
-    - voxel51-eta==0.8.1
-    - watchdog==2.2.0
-    - webencodings==0.5.1
-    - wsproto==1.2.0
-    - xmltodict==0.13.0
+      - aiofiles==22.1.0
+      - albumentations==1.3.0
+      - altair==4.2.0
+      - anyio==3.6.2
+      - argcomplete==2.0.0
+      - attrs==22.1.0
+      - backports-zoneinfo==0.2.1
+      - blinker==1.5
+      - boto3==1.26.33
+      - botocore==1.29.33
+      - cachecontrol==0.12.11
+      - cachetools==5.2.0
+      - cleo==2.0.1
+      - crashtest==0.4.1
+      - dacite==1.6.0
+      - deprecated==1.2.13
+      - dnspython==2.2.1
+      - dulwich==0.20.50
+      - eventlet==0.33.2
+      - fiftyone==0.18.0
+      - fiftyone-brain==0.9.2
+      - fiftyone-db==0.4.0
+      - glob2==0.7
+      - graphql-core==3.2.3
+      - greenlet==2.0.1
+      - h11==0.14.0
+      - h2==4.1.0
+      - hpack==4.0.0
+      - html5lib==1.1
+      - httpcore==0.16.2
+      - httpx==0.23.1
+      - hypercorn==0.14.3
+      - hyperframe==6.0.1
+      - imageio==2.23.0
+      - importlib-metadata==4.13.0
+      - importlib-resources==5.10.1
+      - jaraco-classes==3.2.3
+      - jeepney==0.8.0
+      - jmespath==1.0.1
+      - joblib==1.2.0
+      - jsonschema==4.17.3
+      - kaleido==0.2.1
+      - keyring==23.13.1
+      - lockfile==0.12.2
+      - mongoengine==0.24.2
+      - more-itertools==9.0.0
+      - motor==3.1.1
+      - msgpack==1.0.4
+      - ndjson==0.3.1
+      - opencv-python-headless==4.6.0.66
+      - patool==1.12
+      - pkginfo==1.9.2
+      - pkgutil-resolve-name==1.3.10
+      - poetry==1.3.1
+      - poetry-core==1.4.0
+      - poetry-plugin-export==1.2.0
+      - pprintpp==0.4.0
+      - priority==2.0.0
+      - pyarrow==10.0.1
+      - pydeck==0.8.0
+      - pymongo==4.3.3
+      - pympler==1.0.1
+      - pyrsistent==0.19.2
+      - pytz-deprecation-shim==0.1.0.post0
+      - pywavelets==1.4.1
+      - qudida==0.0.4
+      - rapidfuzz==2.13.6
+      - requests-toolbelt==0.10.1
+      - retrying==1.3.4
+      - rfc3986==1.5.0
+      - s3transfer==0.6.0
+      - scikit-learn==1.2.0
+      - secretstorage==3.3.3
+      - semver==2.13.0
+      - shapely==2.0.0
+      - sniffio==1.3.0
+      - sortedcontainers==2.4.0
+      - sse-starlette==0.10.3
+      - sseclient-py==1.7.2
+      - starlette==0.20.4
+      - strawberry-graphql==0.138.1
+      - streamlit==1.16.0
+      - tabulate==0.9.0
+      - threadpoolctl==3.1.0
+      - tifffile==2022.10.10
+      - torchtyping==0.1.4
+      - trove-classifiers==2022.12.1
+      - typeguard==2.13.3
+      - tzdata==2022.7
+      - tzlocal==4.2
+      - universal-analytics-python3==1.1.1
+      - validators==0.20.0
+      - voxel51-eta==0.8.1
+      - watchdog==2.2.0
+      - webencodings==0.5.1
+      - wsproto==1.2.0
+      - xmltodict==0.13.0
 prefix: /opt/conda/envs/segmentation

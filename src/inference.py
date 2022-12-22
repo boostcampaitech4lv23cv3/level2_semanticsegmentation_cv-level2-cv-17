@@ -97,6 +97,7 @@ def save_result(model, test_loader, output_path):
 def main(args):
     train_loader, val_loader, test_loader = make_dataloader()
     model, criterion, optimizer = define_network(pretrained=args.model_path)
+    model = model.to(device)
     save_result(model, test_loader, args.output_path)
 
 

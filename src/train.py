@@ -49,9 +49,10 @@ def parse_args():
     # parser.add_argument(
     #     "--file_name", type=str, default="fcn_resnet50_best_model(pretrained).pt"
     # )
+    parser.add_argument("file_name", type=str)
     parser.add_argument("--print_every", type=int, default=25)
     parser.add_argument("--val_every", type=int, default=1)
-    parser.add_argument("--early_stopping", type=bool, default=False)
+    parser.add_argument("early_stopping", type=bool, default=False)
     parser.add_argument("--patience", type=int, default=7)
 
     args = parser.parse_args()
@@ -59,9 +60,9 @@ def parse_args():
     return args
 
 
-def save_model(model, saved_dir, file_name="fcn_resnet50_best_model(pretrained).pt"):
+def save_model(model, saved_dir, file_name):
     # check_point = {"net": model.state_dict()}
-    output_path = os.path.join(saved_dir, file_name)
+    output_path = os.path.join(saved_dir, f'{file_name}.pth')
     torch.save(model, output_path)
     
     
@@ -119,7 +120,7 @@ def train(
     criterion,
     optimizer,
     saved_dir,
-    #file_name,
+    file_name,
     print_every,
     val_every,
     device,
@@ -128,7 +129,7 @@ def train(
 ):
     best_mIoU = 0
     best_epoch = 0
-    scaler = torch.cuda.amp.GradScaler(True)        # 
+    scaler = torch.cuda.amp.GradScaler(True)        # AMP
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=50, eta_min=0)
     
     
@@ -152,7 +153,7 @@ def train(
             with torch.cuda.amp.autocast(True):
                 # inference
                 #outputs = model(images)["out"]
-                outputs = model(images)     # smp
+                outputs = model(images)                                 # smp
                 # loss 계산 (cross entropy loss)
                 loss = criterion(outputs, masks)
                 
@@ -197,7 +198,7 @@ def train(
                 print(f"Save model in {saved_dir}")
                 best_mIoU = mIoU
                 best_epoch = epoch
-                save_model(model, saved_dir, file_name=f'Deeplabv3plus_hrnet_w40.pth')
+                save_model(model, saved_dir, file_name)
 
             # early stopping 적용 시 patience 동안 성능 개선이 없으면 종료
             if early_stopping:
@@ -214,7 +215,7 @@ def main(args):
     wandb.init(
             entity= 'boostcamp-ai-tech-4-cv-17',
             project= 'Semantic Segmentation',
-            name='test_jkb_deeplabv3'
+            name='smp_deeplabv3plus_jkb'
     )
     wandb.config.update(args)
     
@@ -232,7 +233,7 @@ def main(args):
         criterion=criterion,
         optimizer=optimizer,
         saved_dir=args.saved_dir,
-        #file_name=args.file_name,
+        file_name=args.file_name,
         print_every=args.print_every,
         val_every=args.val_every,
         device=device,

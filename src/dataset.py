@@ -134,6 +134,7 @@ def make_dataloader(batch_size=4):
         shuffle=True,
         num_workers=4,
         collate_fn=collate_fn,
+        drop_last=True
     )
 
     val_loader = torch.utils.data.DataLoader(
@@ -142,6 +143,7 @@ def make_dataloader(batch_size=4):
         shuffle=False,
         num_workers=4,
         collate_fn=collate_fn,
+        drop_last=True
     )
 
     test_loader = torch.utils.data.DataLoader(

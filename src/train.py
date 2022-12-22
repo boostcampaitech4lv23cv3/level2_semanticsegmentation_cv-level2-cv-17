@@ -12,6 +12,7 @@ import datetime
 from dataset import make_dataloader
 from network import define_network
 from utils import add_hist, label_accuracy_score, set_seed
+import wandb
 
 warnings.filterwarnings("ignore")
 
@@ -40,7 +41,7 @@ def parse_args():
     parser = ArgumentParser()
 
     parser.add_argument("--batch_size", type=int, default=4)
-    parser.add_argument("--num_epochs", type=int, default=2)
+    parser.add_argument("--num_epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--saved_dir", type=str, default="/opt/ml/input/code/saved")
     parser.add_argument(
@@ -124,6 +125,7 @@ def train(
 ):
     best_mIoU = 0
     best_epoch = 0
+    scaler = torch.cuda.amp.GradScaler(True)
 
     for epoch in range(num_epochs):
         start_time = time.time()
@@ -141,11 +143,19 @@ def train(
             # device 할당
             model = model.to(device)
             
-            # loss 계산 (cross entropy loss)
-            loss = criterion(outputs, masks)
+            with torch.cuda.amp.autocast(True):
+                # inference
+                outputs = model(images)["out"]
+                # loss 계산 (cross entropy loss)
+                loss = criterion(outputs, masks)
+                
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)
+            scaler.update()
             optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+            
+            # loss.backward()
+            # optimizer.step()
 
             outputs = torch.argmax(outputs, dim=1).detach().cpu().numpy()
             masks = masks.detach().cpu().numpy()
@@ -159,6 +169,10 @@ def train(
                     f"Step: [{step+1}/{len(data_loader)}], "
                     + f"Loss: {round(loss.item(),4)}, "
                     + f"mIoU: {round(mIoU,4)}"
+                )
+            wandb.log(
+                {'loss':round(loss.item(),4),
+                 'mIoU':round(mIoU,4)}
                 )
         end_time = time.time()
         sec = end_time-start_time
@@ -188,6 +202,13 @@ def train(
 
 def main(args):
     set_seed()
+    wandb.init(
+            entity= 'boostcamp-ai-tech-4-cv-17',
+            project= 'Semantic Segmentation',
+            name='test_jkb'
+    )
+    wandb.config.update(args)
+    
     model, criterion, optimizer = define_network(pretrained=True, learning_rate=args.lr)
     train_loader, val_loader, test_loader = make_dataloader(args.batch_size)
 

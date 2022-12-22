@@ -141,18 +141,11 @@ def train(
             # device 할당
             model = model.to(device)
             
-            with torch.cuda.amp.autocast(True):
-                # inference
-                outputs = model(images)["out"]
-                # loss 계산 (cross entropy loss)
-                loss = criterion(outputs, masks)
-             
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)   
-            scaler.update()
+            # loss 계산 (cross entropy loss)
+            loss = criterion(outputs, masks)
             optimizer.zero_grad()
-            #loss.backward()
-            #optimizer.step()
+            loss.backward()
+            optimizer.step()
 
             outputs = torch.argmax(outputs, dim=1).detach().cpu().numpy()
             masks = masks.detach().cpu().numpy()

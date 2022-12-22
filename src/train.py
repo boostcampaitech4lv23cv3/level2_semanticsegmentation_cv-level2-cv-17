@@ -101,7 +101,7 @@ def validation(epoch, model, data_loader, criterion, device):
         )
         print(f"IoU by class : {IoU_by_class}")
 
-    return avrg_loss
+    return mIoU
 
 
 def train(
@@ -119,7 +119,7 @@ def train(
     early_stopping,
     patience,
 ):
-    best_loss = 9999999
+    best_mIoU = 0
     best_epoch = 0
 
     for epoch in range(num_epochs):
@@ -162,11 +162,11 @@ def train(
 
         # validation 주기에 따른 loss 출력 및 best model 저장
         if (epoch + 1) % val_every == 0:
-            avrg_loss = validation(epoch + 1, model, val_loader, criterion, device)
-            if avrg_loss < best_loss:
+            mIoU = validation(epoch + 1, model, val_loader, criterion, device)
+            if mIoU > best_mIoU:
                 print(f"Best performance at epoch: {epoch + 1}")
                 print(f"Save model in {saved_dir}")
-                best_loss = avrg_loss
+                best_mIoU = mIoU
                 best_epoch = epoch
                 save_model(model, saved_dir, file_name=file_name)
 

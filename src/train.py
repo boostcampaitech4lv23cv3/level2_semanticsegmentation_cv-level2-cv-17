@@ -6,6 +6,9 @@ import numpy as np
 import torch
 from tqdm import tqdm
 
+import time
+import datetime
+
 from dataset import make_dataloader
 from network import define_network
 from utils import add_hist, label_accuracy_score
@@ -123,6 +126,7 @@ def train(
     best_epoch = 0
 
     for epoch in range(num_epochs):
+        start_time = time.time()
         model.train()
 
         hist = np.zeros((n_class, n_class))
@@ -136,15 +140,19 @@ def train(
 
             # device 할당
             model = model.to(device)
-
-            # inference
-            outputs = model(images)["out"]
-
-            # loss 계산 (cross entropy loss)
-            loss = criterion(outputs, masks)
+            
+            with torch.cuda.amp.autocast(True):
+                # inference
+                outputs = model(images)["out"]
+                # loss 계산 (cross entropy loss)
+                loss = criterion(outputs, masks)
+             
+            scaler.scale(loss).backward()
+            scaler.step(optimizer)   
+            scaler.update()
             optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
+            #loss.backward()
+            #optimizer.step()
 
             outputs = torch.argmax(outputs, dim=1).detach().cpu().numpy()
             masks = masks.detach().cpu().numpy()
@@ -159,6 +167,11 @@ def train(
                     + f"Loss: {round(loss.item(),4)}, "
                     + f"mIoU: {round(mIoU,4)}"
                 )
+        end_time = time.time()
+        sec = end_time-start_time
+        result_time = datetime.timedelta(seconds=sec)
+        print(str(result_time)[:7])
+        
 
         # validation 주기에 따른 loss 출력 및 best model 저장
         if (epoch + 1) % val_every == 0:

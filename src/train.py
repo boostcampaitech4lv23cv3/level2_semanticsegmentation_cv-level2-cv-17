@@ -45,6 +45,8 @@ def parse_args():
     )
     parser.add_argument("--print_every", type=int, default=25)
     parser.add_argument("--val_every", type=int, default=1)
+    parser.add_argument("--early_stopping", type=bool, default=False)
+    parser.add_argument("--patience", type=int, default=7)
 
     args = parser.parse_args()
 
@@ -114,8 +116,11 @@ def train(
     print_every,
     val_every,
     device,
+    early_stopping,
+    patience,
 ):
     best_loss = 9999999
+    best_epoch = 0
 
     for epoch in range(num_epochs):
         model.train()
@@ -162,7 +167,17 @@ def train(
                 print(f"Best performance at epoch: {epoch + 1}")
                 print(f"Save model in {saved_dir}")
                 best_loss = avrg_loss
+                best_epoch = epoch
                 save_model(model, saved_dir, file_name=file_name)
+
+            # early stopping 적용 시 patience 동안 성능 개선이 없으면 종료
+            if early_stopping:
+                if epoch - best_epoch >= val_every * patience:
+                    print(f"Early stopped. Saved Model : {best_epoch + 1} epoch")
+                    break
+                elif epoch != best_epoch:
+                    count = (epoch - best_epoch) // val_every
+                    print(f"Early stopping counter : {count}/{patience}")
 
 
 def main(args):
@@ -181,6 +196,8 @@ def main(args):
         print_every=args.print_every,
         val_every=args.val_every,
         device=device,
+        early_stopping=args.early_stopping,
+        patience=args.patience,
     )
 
 

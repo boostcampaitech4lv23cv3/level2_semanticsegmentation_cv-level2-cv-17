@@ -171,8 +171,8 @@ def train(
                     + f"mIoU: {round(mIoU,4)}"
                 )
             wandb.log(
-                {'loss':round(loss.item(),4),
-                 'mIoU':round(mIoU,4)}
+                {'train/loss':round(loss.item(),4),
+                 'train/mIoU':round(mIoU,4)}
                 )
         end_time = time.time()
         sec = end_time-start_time
@@ -183,6 +183,7 @@ def train(
         # validation 주기에 따른 loss 출력 및 best model 저장
         if (epoch + 1) % val_every == 0:
             mIoU = validation(epoch + 1, model, val_loader, criterion, device)
+            wandb.log({'val/mIoU':round(mIoU,4)})
             if mIoU > best_mIoU:
                 print(f"Best performance at epoch: {epoch + 1}")
                 print(f"Save model in {saved_dir}")

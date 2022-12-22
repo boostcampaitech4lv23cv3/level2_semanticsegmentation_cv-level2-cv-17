@@ -13,6 +13,8 @@ from dataset import make_dataloader
 from network import define_network
 from utils import add_hist, label_accuracy_score, set_seed
 import wandb
+from network2 import smp_criterion, smp_model, smp_optim
+import torch.optim as optim
 
 warnings.filterwarnings("ignore")
 
@@ -40,13 +42,13 @@ categories = (
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument("--batch_size", type=int, default=4)
-    parser.add_argument("--num_epochs", type=int, default=20)
+    parser.add_argument("--batch_size", type=int, default=32)
+    parser.add_argument("--num_epochs", type=int, default=50)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--saved_dir", type=str, default="/opt/ml/input/code/saved")
-    parser.add_argument(
-        "--file_name", type=str, default="fcn_resnet50_best_model(pretrained).pt"
-    )
+    # parser.add_argument(
+    #     "--file_name", type=str, default="fcn_resnet50_best_model(pretrained).pt"
+    # )
     parser.add_argument("--print_every", type=int, default=25)
     parser.add_argument("--val_every", type=int, default=1)
     parser.add_argument("--early_stopping", type=bool, default=False)
@@ -61,13 +63,13 @@ def save_model(model, saved_dir, file_name="fcn_resnet50_best_model(pretrained).
     # check_point = {"net": model.state_dict()}
     output_path = os.path.join(saved_dir, file_name)
     torch.save(model, output_path)
-
-
+    
+    
 def validation(epoch, model, data_loader, criterion, device):
     print(f"Start validation #{epoch}")
-    model.eval()
 
     with torch.no_grad():
+        model.eval()
         n_class = 11
         total_loss = 0
         cnt = 0
@@ -83,7 +85,8 @@ def validation(epoch, model, data_loader, criterion, device):
             # device 할당
             model = model.to(device)
 
-            outputs = model(images)["out"]
+            #outputs = model(images)["out"]
+            outputs = model(images)             # smp
             loss = criterion(outputs, masks)
             total_loss += loss
             cnt += 1
@@ -116,7 +119,7 @@ def train(
     criterion,
     optimizer,
     saved_dir,
-    file_name,
+    #file_name,
     print_every,
     val_every,
     device,
@@ -125,7 +128,10 @@ def train(
 ):
     best_mIoU = 0
     best_epoch = 0
-    scaler = torch.cuda.amp.GradScaler(True)
+    scaler = torch.cuda.amp.GradScaler(True)        # 
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=50, eta_min=0)
+    
+    
 
     for epoch in range(num_epochs):
         start_time = time.time()
@@ -145,7 +151,8 @@ def train(
             
             with torch.cuda.amp.autocast(True):
                 # inference
-                outputs = model(images)["out"]
+                #outputs = model(images)["out"]
+                outputs = model(images)     # smp
                 # loss 계산 (cross entropy loss)
                 loss = criterion(outputs, masks)
                 
@@ -174,6 +181,7 @@ def train(
                 {'train/loss':round(loss.item(),4),
                  'train/mIoU':round(mIoU,4)}
                 )
+        scheduler.step()
         end_time = time.time()
         sec = end_time-start_time
         result_time = datetime.timedelta(seconds=sec)
@@ -189,7 +197,7 @@ def train(
                 print(f"Save model in {saved_dir}")
                 best_mIoU = mIoU
                 best_epoch = epoch
-                save_model(model, saved_dir, file_name=file_name)
+                save_model(model, saved_dir, file_name=f'Deeplabv3plus_hrnet_w40.pth')
 
             # early stopping 적용 시 patience 동안 성능 개선이 없으면 종료
             if early_stopping:
@@ -206,11 +214,14 @@ def main(args):
     wandb.init(
             entity= 'boostcamp-ai-tech-4-cv-17',
             project= 'Semantic Segmentation',
-            name='test_jkb'
+            name='test_jkb_deeplabv3'
     )
     wandb.config.update(args)
     
-    model, criterion, optimizer = define_network(pretrained=True, learning_rate=args.lr)
+    #model, criterion, optimizer = define_network(pretrained=True, learning_rate=args.lr)
+    model = smp_model()
+    criterion = smp_criterion()
+    optimizer = smp_optim(model)
     train_loader, val_loader, test_loader = make_dataloader(args.batch_size)
 
     train(
@@ -221,7 +232,7 @@ def main(args):
         criterion=criterion,
         optimizer=optimizer,
         saved_dir=args.saved_dir,
-        file_name=args.file_name,
+        #file_name=args.file_name,
         print_every=args.print_every,
         val_every=args.val_every,
         device=device,

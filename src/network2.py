@@ -8,10 +8,9 @@ import torch
 def smp_criterion():
     return smp.losses.FocalLoss(mode='multiclass')
 
-
 def smp_model():
-    model = smp.DeepLabV3(
-        encoder_name='tu-eca_nfnet_l0',
+    model = smp.DeepLabV3Plus(
+        encoder_name='resnet18',
         encoder_weights='imagenet',
         in_channels=3,
         classes=11

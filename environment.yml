@@ -211,6 +211,7 @@ dependencies:
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.4.9=haebb681_0
   - pip:
+      - addict==2.4.0
       - aiofiles==22.1.0
       - albumentations==1.3.0
       - altair==4.2.0
@@ -256,12 +257,19 @@ dependencies:
       - kaleido==0.2.1
       - keyring==23.13.1
       - lockfile==0.12.2
+      - markdown==3.4.1
+      - mmcv==2.0.0rc3
+      - mmengine==0.3.2
+      - model-index==0.1.11
       - mongoengine==0.24.2
       - more-itertools==9.0.0
       - motor==3.1.1
       - msgpack==1.0.4
       - ndjson==0.3.1
+      - opencv-python==4.6.0.66
       - opencv-python-headless==4.6.0.66
+      - openmim==0.3.3
+      - ordered-set==4.1.0
       - patool==1.12
       - pkginfo==1.9.2
       - pkgutil-resolve-name==1.3.10
@@ -269,6 +277,7 @@ dependencies:
       - poetry-core==1.4.0
       - poetry-plugin-export==1.2.0
       - pprintpp==0.4.0
+      - prettytable==3.5.0
       - priority==2.0.0
       - pyarrow==10.0.1
       - pydeck==0.8.0
@@ -285,6 +294,7 @@ dependencies:
       - s3transfer==0.6.0
       - scikit-learn==1.2.0
       - secretstorage==3.3.3
+      - segmentation-mask-overlay==0.3.2
       - semver==2.13.0
       - shapely==2.0.0
       - sniffio==1.3.0
@@ -295,6 +305,7 @@ dependencies:
       - strawberry-graphql==0.138.1
       - streamlit==1.16.0
       - tabulate==0.9.0
+      - termcolor==2.1.1
       - threadpoolctl==3.1.0
       - tifffile==2022.10.10
       - torchtyping==0.1.4
@@ -309,4 +320,5 @@ dependencies:
       - webencodings==0.5.1
       - wsproto==1.2.0
       - xmltodict==0.13.0
+      - yapf==0.32.0
 prefix: /opt/conda/envs/segmentation

@@ -42,18 +42,16 @@ categories = (
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument("--batch_size", type=int, default=32)
-    parser.add_argument("--num_epochs", type=int, default=50)
+    parser.add_argument("--batch_size", type=int, default=8)
+    parser.add_argument("--num_epochs", type=int, default=20)
     parser.add_argument("--lr", type=float, default=1e-4)
     parser.add_argument("--saved_dir", type=str, default="/opt/ml/input/code/saved")
-    # parser.add_argument(
-    #     "--file_name", type=str, default="fcn_resnet50_best_model(pretrained).pt"
-    # )
     parser.add_argument("file_name", type=str)
     parser.add_argument("--print_every", type=int, default=25)
     parser.add_argument("--val_every", type=int, default=1)
-    parser.add_argument("early_stopping", type=bool, default=False)
+    parser.add_argument("--early_stopping", type=bool, default=False)
     parser.add_argument("--patience", type=int, default=7)
+    parser.add_argument("--amp", type=bool, default=False)
 
     args = parser.parse_args()
 
@@ -61,7 +59,6 @@ def parse_args():
 
 
 def save_model(model, saved_dir, file_name):
-    # check_point = {"net": model.state_dict()}
     output_path = os.path.join(saved_dir, f'{file_name}.pth')
     torch.save(model, output_path)
     
@@ -86,7 +83,6 @@ def validation(epoch, model, data_loader, criterion, device):
             # device 할당
             model = model.to(device)
 
-            #outputs = model(images)["out"]
             outputs = model(images)             # smp
             loss = criterion(outputs, masks)
             total_loss += loss
@@ -129,8 +125,8 @@ def train(
 ):
     best_mIoU = 0
     best_epoch = 0
-    scaler = torch.cuda.amp.GradScaler(True)        # AMP
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=50, eta_min=0)
+    scaler = torch.cuda.amp.GradScaler(args.amp)        # AMP
+    #scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=50, eta_min=0)
     
     
 
@@ -150,20 +146,21 @@ def train(
             # device 할당
             model = model.to(device)
             
-            with torch.cuda.amp.autocast(True):
-                # inference
-                #outputs = model(images)["out"]
-                outputs = model(images)                                 # smp
-                # loss 계산 (cross entropy loss)
+            if args.amp:
+                with torch.cuda.amp.autocast(args.amp):
+                    outputs = model(images)
+                    loss = criterion(outputs, masks)
+                scaler.scale(loss).backward()
+                scaler.step(optimizer)
+                scaler.update()
+                optimizer.zero_grad()
+            else:
+                outputs = model(images)
                 loss = criterion(outputs, masks)
+                optimizer.zero_grad()
+                loss.backward()
+                optimizer.step()
                 
-            scaler.scale(loss).backward()
-            scaler.step(optimizer)
-            scaler.update()
-            optimizer.zero_grad()
-            
-            # loss.backward()
-            # optimizer.step()
 
             outputs = torch.argmax(outputs, dim=1).detach().cpu().numpy()
             masks = masks.detach().cpu().numpy()
@@ -182,7 +179,7 @@ def train(
                 {'train/loss':round(loss.item(),4),
                  'train/mIoU':round(mIoU,4)}
                 )
-        scheduler.step()
+        #scheduler.step()
         end_time = time.time()
         sec = end_time-start_time
         result_time = datetime.timedelta(seconds=sec)
@@ -211,15 +208,24 @@ def train(
 
 
 def main(args):
-    set_seed()
+    set_seed(21)
     wandb.init(
             entity= 'boostcamp-ai-tech-4-cv-17',
             project= 'Semantic Segmentation',
-            name='smp_deeplabv3plus_jkb'
+            name='DeepLabV3Plus_Cutmix'
+            #name='delete'
     )
     wandb.config.update(args)
+    temp_dic = {'model':'DeepLabV3Plus',
+                'encoder':'efficientnet-b0',
+                'encoder_weight':'imagenet',
+                'loss':'CutMixCrossEntropyLoss',
+                'optimizer':'Adam',
+                'scheduler':'None',
+                'Augmentation':'Cutmix',
+                }
+    wandb.config.update(temp_dic)
     
-    #model, criterion, optimizer = define_network(pretrained=True, learning_rate=args.lr)
     model = smp_model()
     criterion = smp_criterion()
     optimizer = smp_optim(model)

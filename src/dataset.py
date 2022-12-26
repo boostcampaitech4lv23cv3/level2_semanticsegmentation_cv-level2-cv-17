@@ -101,11 +101,28 @@ def collate_fn(batch):
 
 def define_transform():
     """Augmentation 적용 시 수정"""
-    train_transform = A.Compose([ToTensorV2()])
+    train_transform = A.Compose(
+        [
+        #A.GridDropout(ratio=0.2, random_offset=True, holes_number_x=5, holes_number_y=5),       
+        ToTensorV2()
+        ]
+    )
 
-    val_transform = A.Compose([ToTensorV2()])
+    val_transform = A.Compose(
+        [
+        #A.GridDropout(ratio=0.2, random_offset=True, holes_number_x=5, holes_number_y=5),       
+        ToTensorV2()
+        ]
+    )
 
-    test_transform = A.Compose([ToTensorV2()])
+    test_transform = A.Compose(             # tta
+        [   
+            A.HorizontalFlip(),
+            A.RandomBrightness(limit=0.5),
+            A.RandomRotate90(),
+            ToTensorV2()
+        ]
+    )
 
     return train_transform, val_transform, test_transform
 

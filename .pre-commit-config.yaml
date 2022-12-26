@@ -71,4 +71,6 @@ repos:
       - id: flake8
         args:
           - --max-line-length=88
-          - --extend-ignore=E203
+          - --extend-ignore=E203,E731
+          # E203: Whitespace before ':' (black compatible config)
+          # E731: Do not assign a lambda expression, use a def

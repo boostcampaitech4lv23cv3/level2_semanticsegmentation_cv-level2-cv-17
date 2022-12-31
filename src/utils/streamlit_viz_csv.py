@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 from pycocotools.coco import COCO
 
-CSV_DIR = "/opt/ml/level2_semanticsegmentation_cv-level2-cv-17/src/submission/"
+CSV_DIR = "/opt/ml/input/code/submission/"
 
 
 @st.cache

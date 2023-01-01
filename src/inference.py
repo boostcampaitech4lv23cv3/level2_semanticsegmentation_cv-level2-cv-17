@@ -1,3 +1,4 @@
+import os
 import warnings
 from argparse import ArgumentParser
 
@@ -13,22 +14,16 @@ from network import define_network
 warnings.filterwarnings("ignore")
 
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+CKPT_DIR = "/opt/ml/input/code/saved/"
+OUTPUT_DIR = "/opt/ml/input/code/submission/"
+
+cvt_ext = lambda name, ext: name.split(".")[0] + ext
 
 
 def parse_args():
     parser = ArgumentParser()
 
-    parser.add_argument(
-        "--model_path",
-        type=str,
-        default="/opt/ml/input/code/saved/fcn_resnet50_best_model(pretrained).pt",
-    )
-    parser.add_argument(
-        "--output_path",
-        type=str,
-        default="/opt/ml/input/code/submission/fcn_resnet50_best_model(pretrained).csv",
-    )
+    parser.add_argument("model_name", type=str, help="model name to inference with")
 
     args = parser.parse_args()
 
@@ -38,7 +33,10 @@ def parse_args():
 def test(model, test_loader, device):
     size = 256
     transform = A.Compose([A.Resize(size, size)])
-    print("Start prediction.")
+
+    model = model.to(device)
+
+    print("Inferencing...")
 
     model.eval()
 
@@ -65,13 +63,14 @@ def test(model, test_loader, device):
             preds_array = np.vstack((preds_array, oms))
 
             file_name_list.append([i["file_name"] for i in image_infos])
-    print("End prediction.")
+
+    print("Done.")
     file_names = [y for x in file_name_list for y in x]
 
     return file_names, preds_array
 
 
-def save_result(model, test_loader, output_path):
+def save_result(model, device, test_loader, output_path):
     # sample_submisson.csv 열기
     submission = pd.read_csv(
         "/opt/ml/input/code/submission/sample_submission.csv", index_col=None
@@ -95,9 +94,15 @@ def save_result(model, test_loader, output_path):
 
 
 def main(args):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    model_path = os.path.join(CKPT_DIR, cvt_ext(args.model_name, ".pt"))
+    output_path = os.path.join(OUTPUT_DIR, cvt_ext(args.model_name, ".csv"))
+
+    model, criterion, optimizer = define_network(pretrained=model_path, device=device)
     train_loader, val_loader, test_loader = make_dataloader()
-    model, criterion, optimizer = define_network(pretrained=args.model_path)
-    save_result(model, test_loader, args.output_path)
+
+    save_result(model, device, test_loader, output_path)
 
 
 if __name__ == "__main__":

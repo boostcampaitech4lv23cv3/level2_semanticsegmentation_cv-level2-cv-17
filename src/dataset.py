@@ -11,11 +11,11 @@ from torch.utils.data import Dataset
 
 warnings.filterwarnings("ignore")
 
-dataset_dir = "/opt/ml/input/data"
-train_path = "/opt/ml/input/data/train.json"
-val_path = "/opt/ml/input/data/val.json"
-test_path = "/opt/ml/input/data/test.json"
-category_names = [
+DATASET_DIR = "/opt/ml/input/data"
+TRAIN_PATH = "/opt/ml/input/data/train.json"
+VAL_PATH = "/opt/ml/input/data/val.json"
+TEST_PATH = "/opt/ml/input/data/test.json"
+CLASSES = [
     "Backgroud",
     "General trash",
     "Paper",
@@ -52,7 +52,7 @@ class CustomDataLoader(Dataset):
         image_infos = self.coco.loadImgs(image_id)[0]
 
         # cv2 를 활용하여 image 불러오기
-        images = cv2.imread(os.path.join(dataset_dir, image_infos["file_name"]))
+        images = cv2.imread(os.path.join(DATASET_DIR, image_infos["file_name"]))
         images = cv2.cvtColor(images, cv2.COLOR_BGR2RGB).astype(np.float32)
         images /= 255.0
 
@@ -72,7 +72,7 @@ class CustomDataLoader(Dataset):
             anns = sorted(anns, key=lambda idx: idx["area"], reverse=True)
             for i in range(len(anns)):
                 className = get_classname(anns[i]["category_id"], cats)
-                pixel_value = category_names.index(className)
+                pixel_value = CLASSES.index(className)
                 masks[self.coco.annToMask(anns[i]) == 1] = pixel_value
             masks = masks.astype(np.int8)
 
@@ -115,17 +115,17 @@ def make_dataloader(batch_size=4):
 
     # train dataset
     train_dataset = CustomDataLoader(
-        data_dir=train_path, mode="train", transform=train_transform
+        data_dir=TRAIN_PATH, mode="train", transform=train_transform
     )
 
     # validation dataset
     val_dataset = CustomDataLoader(
-        data_dir=val_path, mode="val", transform=val_transform
+        data_dir=VAL_PATH, mode="val", transform=val_transform
     )
 
     # test dataset
     test_dataset = CustomDataLoader(
-        data_dir=test_path, mode="test", transform=test_transform
+        data_dir=TEST_PATH, mode="test", transform=test_transform
     )
 
     train_loader = torch.utils.data.DataLoader(

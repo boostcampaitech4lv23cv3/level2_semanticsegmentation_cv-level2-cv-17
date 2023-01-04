@@ -1,24 +1,134 @@
-[tool.autoflake]
-exclude                   = ['__init__.py']
-expand-star-imports       = true
-in-place                  = true
-recursive                 = true
-remove-all-unused-imports = true
-remove-duplicate-keys     = true
-remove-unused-variables   = true
+# [tool.autoflake]
+# # https://github.com/PyCQA/autoflake#advanced-usage
+# exclude = [
+#   '(artifacts|wandb|work_dirs)/',
+#   '__init__.py',
+#   'mmsegmentation/(_git|.circleci|.dev|.github|demo|docker|docs|mmseg|mmsegmentation.egg-info|requirements|resources|tests|tools)/',
+#   'mmsegmentation/(artifacts|wandb|work_dirs)/',
+#   'mmsegmentation/configs/(_base_|convnext|encnet|isanet|poolformer|stdc|ann|danet|erfnet|knet|psanet|swin|apcnet|deeplabv3|fastfcn|mae|pspnet|twins|beit|deeplabv3plus|fastscnn|mobilenet_v2|resnest|unet|bisenetv1|dmnet|fcn|mobilenet_v3|segformer|upernet|bisenetv2|dnlnet|gcnet|nonlocal_net|segmenter|vit|ccnet|dpt|hrnet|ocrnet|sem_fpn|cgnet|emanet|icnet|point_rend|setr)/',
+#   'mmsegmentation/setup.py',
+# ]
+# expand-star-imports = true
+# in-place = true
+# recursive = true
+# remove-all-unused-imports = true
+# remove-duplicate-keys = true
+# remove-unused-variables = true
 
 [tool.black]
-color          = true
-line-length    = 88
-target-version = ["py38"]
+# https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html
+# include mmsegmentation/configs/_trash_
+color = true
+extend-exclude = '''
+(
+  mmsegmentation/setup.py
+  | mmsegmentation/(_git|.circleci|.dev|.github|demo|docker|docs|mmseg|mmsegmentation.egg-info|requirements|resources|tests|tools)/*
+  | mmsegmentation/configs/(_base_|convnext|encnet|isanet|poolformer|stdc|ann|danet|erfnet|knet|psanet|swin|apcnet|deeplabv3|fastfcn|mae|pspnet|twins|beit|deeplabv3plus|fastscnn|mobilenet_v2|resnest|unet|bisenetv1|dmnet|fcn|mobilenet_v3|segformer|upernet|bisenetv2|dnlnet|gcnet|nonlocal_net|segmenter|vit|ccnet|dpt|hrnet|ocrnet|sem_fpn|cgnet|emanet|icnet|point_rend|setr)/*
+  | mmsegmentation/(artifacts|wandb|work_dirs)/*
+  | (artifacts|wandb|work_dirs)/*
+)
+'''
+line-length = 88
+target-version = [
+  "py38",
+]
 
 [tool.isort]
-atomic       = true
+# https://pycqa.github.io/isort/docs/configuration/options.html
+atomic = true
 color_output = true
+conda_env = true
 float_to_top = true
-profile      = 'black'
-py_version   = 38
+known_third_party = [
+  "wandb",
+]
+profile = 'black'
+py_version = 38
+skip_gitignore = true
+skip_glob = [
+  "artifacts/**",
+  "mmsegmentation/.circleci/**",
+  "mmsegmentation/.dev/**",
+  "mmsegmentation/.dev_scripts/**",
+  "mmsegmentation/.github/**",
+  "mmsegmentation/_git/**",
+  "mmsegmentation/artifacts/**",
+  "mmsegmentation/configs/_base_/**",
+  "mmsegmentation/configs/ann/**",
+  "mmsegmentation/configs/apcnet/**",
+  "mmsegmentation/configs/beit/**",
+  "mmsegmentation/configs/bisenetv1/**",
+  "mmsegmentation/configs/bisenetv2/**",
+  "mmsegmentation/configs/ccnet/**",
+  "mmsegmentation/configs/cgnet/**",
+  "mmsegmentation/configs/convnext/**",
+  "mmsegmentation/configs/danet/**",
+  "mmsegmentation/configs/deeplabv3/**",
+  "mmsegmentation/configs/deeplabv3plus/**",
+  "mmsegmentation/configs/dmnet/**",
+  "mmsegmentation/configs/dnlnet/**",
+  "mmsegmentation/configs/dpt/**",
+  "mmsegmentation/configs/emanet/**",
+  "mmsegmentation/configs/encnet/**",
+  "mmsegmentation/configs/erfnet/**",
+  "mmsegmentation/configs/fastfcn/**",
+  "mmsegmentation/configs/fastscnn/**",
+  "mmsegmentation/configs/fcn/**",
+  "mmsegmentation/configs/gcnet/**",
+  "mmsegmentation/configs/hrnet/**",
+  "mmsegmentation/configs/icnet/**",
+  "mmsegmentation/configs/isanet/**",
+  "mmsegmentation/configs/knet/**",
+  "mmsegmentation/configs/mae/**",
+  "mmsegmentation/configs/mobilenet_v2/**",
+  "mmsegmentation/configs/mobilenet_v3/**",
+  "mmsegmentation/configs/nonlocal_net/**",
+  "mmsegmentation/configs/ocrnet/**",
+  "mmsegmentation/configs/point_rend/**",
+  "mmsegmentation/configs/poolformer/**",
+  "mmsegmentation/configs/psanet/**",
+  "mmsegmentation/configs/pspnet/**",
+  "mmsegmentation/configs/resnest/**",
+  "mmsegmentation/configs/segformer/**",
+  "mmsegmentation/configs/segmenter/**",
+  "mmsegmentation/configs/sem_fpn/**",
+  "mmsegmentation/configs/setr/**",
+  "mmsegmentation/configs/stdc/**",
+  "mmsegmentation/configs/swin/**",
+  "mmsegmentation/configs/twins/**",
+  "mmsegmentation/configs/unet/**",
+  "mmsegmentation/configs/upernet/**",
+  "mmsegmentation/configs/vit/**",
+  "mmsegmentation/demo/**",
+  "mmsegmentation/docker/**",
+  "mmsegmentation/docs/**",
+  "mmsegmentation/mmseg/**",
+  "mmsegmentation/mmsegmentation.egg-info/**",
+  "mmsegmentation/requirements/**",
+  "mmsegmentation/resources/**",
+  "mmsegmentation/setup.py",
+  "mmsegmentation/tests/**",
+  "mmsegmentation/tools/**",
+  "mmsegmentation/wandb/**",
+  "mmsegmentation/work_dirs/**",
+  "wandb/**",
+  "work_dirs/**",
+]
 
+# https://pylint.pycqa.org/en/latest/user_guide/configuration/all-options.html
 [tool.pylint.format]
-disable         = 'E0401,C0116,R0913'
+disable = 'E0401,C0116,R0913'
+ignore-paths = [
+  "(artifacts|wandb|work_dirs)",
+  "mmsegmentation/(_git|.circleci|.dev|.github|demo|docker|docs|mmseg|mmsegmentation.egg-info|requirements|resources|tests|tools)/",
+  "mmsegmentation/(artifacts|wandb|work_dirs)/",
+  "mmsegmentation/configs/(_base_|convnext|encnet|isanet|poolformer|stdc|ann|danet|erfnet|knet|psanet|swin|apcnet|deeplabv3|fastfcn|mae|pspnet|twins|beit|deeplabv3plus|fastscnn|mobilenet_v2|resnest|unet|bisenetv1|dmnet|fcn|mobilenet_v3|segformer|upernet|bisenetv2|dnlnet|gcnet|nonlocal_net|segmenter|vit|ccnet|dpt|hrnet|ocrnet|sem_fpn|cgnet|emanet|icnet|point_rend|setr)/",
+  "mmsegmentation/setup.py",
+]
 max-line-length = '88'
+py-version = [
+  3,
+  8,
+]
+recursive = true
+verbose = true

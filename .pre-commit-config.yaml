@@ -24,52 +24,71 @@ repos:
     rev: v3.3.0
     hooks:
       - id: pyupgrade
-        args:
-          - --py38-plus
-          - --keep-runtime-typing
+  #       args:
+  #         - --py38-plus
+  #         - --keep-runtime-typing
+  #         # - --exit-zero-even-if-changed
+  #         # - --keep-percent-format
+  #         # - --keep-mock
 
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.0
-    hooks:
-      - id: autoflake
-        args:
-          - --recursive
-          - --in-place
-          - --remove-all-unused-imports
-          - --remove-unused-variables
-          - --remove-duplicate-keys
-          - --expand-star-imports
-          - --exclude
-          - __init__.py
+  # - repo: https://github.com/PyCQA/autoflake
+  #   rev: v2.0.0
+  #   hooks:
+  #     - id: autoflake
+  #       args:
+  #         # - --config=setup.cfg
+  #         # - --verbose
+  #         - --recursive
+  #         - --in-place
+  #         - --remove-all-unused-imports
+  #         - --remove-unused-variables
+  #         - --remove-duplicate-keys
+  #         - --expand-star-imports
+  #         - --exclude
+  #         - __init__.py
 
   - repo: https://github.com/pycqa/isort
     rev: 5.10.1
     hooks:
       - id: isort
-        args:
-          - --atomic
-          - --color
-          - --float-to-top
-          - --line-length=88
-          - --profile=black
-          - --python-version=38
-          - --gitignore
+        # args:
+        #   # - --verbose
+        #   - --diff
+        #   # - --check-only
+        #   # - --show-config
+        #   - --atomic
+        #   # - --color
+        #   - --float-to-top
+        #   - --line-length=88
+        #   - --profile=black
+        #   - --python-version=38
+        #   - --gitignore
 
   - repo: https://github.com/psf/black
     rev: 22.10.0
     hooks:
       - id: black
-        args:
-          - --line-length=88
-          - --target-version=py38
-          - --color
+        # args:
+        #   - --config=pyproject.toml
+        # - --line-length=88
+        # - --target-version=py38
+        # - --color
+        # - extend-exclude = '''
+        #   (
+        #   mmsegmentation/setup.py
+        #   | mmsegmentation/(_git|.circleci|.dev|.github|demo|docker|docs|mmseg|mmsegmentation.egg-info|requirements|resources|tests|tools)/*
+        #   | mmsegmentation/configs/(_base_|convnext|encnet|isanet|poolformer|stdc|ann|danet|erfnet|knet|psanet|swin|apcnet|deeplabv3|fastfcn|mae|pspnet|twins|beit|deeplabv3plus|fastscnn|mobilenet_v2|resnest|unet|bisenetv1|dmnet|fcn|mobilenet_v3|segformer|upernet|bisenetv2|dnlnet|gcnet|nonlocal_net|segmenter|vit|ccnet|dpt|hrnet|ocrnet|sem_fpn|cgnet|emanet|icnet|point_rend|setr)/*
+        #   | mmsegmentation/(artifacts|wandb|work_dirs)/*
+        #   | (artifacts|wandb|work_dirs)/*
+        #   )
+        #   '''
 
   - repo: https://github.com/PyCQA/flake8
     rev: 5.0.4
     hooks:
       - id: flake8
-        args:
-          - --max-line-length=88
-          - --extend-ignore=E203,E731
-          # E203: Whitespace before ':' (black compatible config)
-          # E731: Do not assign a lambda expression, use a def
+        # args:
+        #   - --max-line-length=88
+        #   - --extend-ignore=E203,E731
+        # E203: Whitespace before ':' (black compatible config)
+        # E731: Do not assign a lambda expression, use a def

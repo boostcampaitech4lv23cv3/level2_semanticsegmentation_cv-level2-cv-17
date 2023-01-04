@@ -4,6 +4,7 @@ from .builder import DATASETS, PIPELINES, build_dataloader, build_dataset
 from .chase_db1 import ChaseDB1Dataset
 from .cityscapes import CityscapesDataset
 from .coco_stuff import COCOStuffDataset
+from .coco_trash import COCOTrashDataset
 from .custom import CustomDataset
 from .dark_zurich import DarkZurichDataset
 from .dataset_wrappers import (ConcatDataset, MultiImageMixDataset,
@@ -27,5 +28,6 @@ __all__ = [
     'PascalContextDataset59', 'ChaseDB1Dataset', 'DRIVEDataset', 'HRFDataset',
     'STAREDataset', 'DarkZurichDataset', 'NightDrivingDataset',
     'COCOStuffDataset', 'LoveDADataset', 'MultiImageMixDataset',
-    'iSAIDDataset', 'ISPRSDataset', 'PotsdamDataset', 'FaceOccludedDataset'
+    'iSAIDDataset', 'ISPRSDataset', 'PotsdamDataset', 'FaceOccludedDataset',
+    'COCOTrashDataset'
 ]

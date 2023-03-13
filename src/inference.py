@@ -5,10 +5,9 @@ import albumentations as A
 import numpy as np
 import pandas as pd
 import torch
-from tqdm import tqdm
-
 from dataset import make_dataloader
 from network import define_network
+from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 
@@ -47,7 +46,6 @@ def test(model, test_loader, device):
 
     with torch.no_grad():
         for step, (imgs, image_infos) in enumerate(tqdm(test_loader)):
-
             # inference (512 x 512)
             outs = model(torch.stack(imgs).to(device))["out"]
             oms = torch.argmax(outs.squeeze(), dim=1).detach().cpu().numpy()

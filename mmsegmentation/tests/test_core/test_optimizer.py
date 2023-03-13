@@ -4,12 +4,14 @@ import torch
 import torch.nn as nn
 from mmcv.runner import DefaultOptimizerConstructor
 
-from mmseg.core.builder import (OPTIMIZER_BUILDERS, build_optimizer,
-                                build_optimizer_constructor)
+from mmseg.core.builder import (
+    OPTIMIZER_BUILDERS,
+    build_optimizer,
+    build_optimizer_constructor,
+)
 
 
 class ExampleModel(nn.Module):
-
     def __init__(self):
         super().__init__()
         self.param1 = nn.Parameter(torch.ones(1))
@@ -28,9 +30,11 @@ momentum = 0.9
 
 def test_build_optimizer_constructor():
     optimizer_cfg = dict(
-        type='SGD', lr=base_lr, weight_decay=base_wd, momentum=momentum)
+        type="SGD", lr=base_lr, weight_decay=base_wd, momentum=momentum
+    )
     optim_constructor_cfg = dict(
-        type='DefaultOptimizerConstructor', optimizer_cfg=optimizer_cfg)
+        type="DefaultOptimizerConstructor", optimizer_cfg=optimizer_cfg
+    )
     optim_constructor = build_optimizer_constructor(optim_constructor_cfg)
     # Test whether optimizer constructor can be built from parent.
     assert type(optim_constructor) is DefaultOptimizerConstructor
@@ -40,20 +44,22 @@ def test_build_optimizer_constructor():
         pass
 
     optim_constructor_cfg = dict(
-        type='MyOptimizerConstructor', optimizer_cfg=optimizer_cfg)
+        type="MyOptimizerConstructor", optimizer_cfg=optimizer_cfg
+    )
     optim_constructor = build_optimizer_constructor(optim_constructor_cfg)
     # Test optimizer constructor can be built from child registry.
     assert type(optim_constructor) is MyOptimizerConstructor
 
     # Test unregistered constructor cannot be built
     with pytest.raises(KeyError):
-        build_optimizer_constructor(dict(type='A'))
+        build_optimizer_constructor(dict(type="A"))
 
 
 def test_build_optimizer():
     model = ExampleModel()
     optimizer_cfg = dict(
-        type='SGD', lr=base_lr, weight_decay=base_wd, momentum=momentum)
+        type="SGD", lr=base_lr, weight_decay=base_wd, momentum=momentum
+    )
     optimizer = build_optimizer(model, optimizer_cfg)
     # test whether optimizer is successfully built from parent.
     assert isinstance(optimizer, torch.optim.SGD)

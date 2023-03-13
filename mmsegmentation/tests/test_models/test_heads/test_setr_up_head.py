@@ -7,7 +7,6 @@ from .utils import to_cuda
 
 
 def test_setr_up_head(capsys):
-
     with pytest.raises(AssertionError):
         # kernel_size must be [1/3]
         SETRUPHead(num_classes=19, kernel_size=2)
@@ -21,9 +20,10 @@ def test_setr_up_head(capsys):
     head = SETRUPHead(
         in_channels=4,
         channels=2,
-        norm_cfg=dict(type='SyncBN'),
+        norm_cfg=dict(type="SyncBN"),
         num_classes=19,
-        init_cfg=dict(type='Kaiming'))
+        init_cfg=dict(type="Kaiming"),
+    )
     super(SETRUPHead, head).init_weights()
 
     # test inference of Naive head
@@ -37,7 +37,8 @@ def test_setr_up_head(capsys):
         num_convs=1,
         up_scale=4,
         kernel_size=1,
-        norm_cfg=dict(type='BN'))
+        norm_cfg=dict(type="BN"),
+    )
 
     h, w = img_size[0] // patch_size, img_size[1] // patch_size
 

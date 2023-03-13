@@ -4,10 +4,9 @@ from argparse import ArgumentParser
 
 import numpy as np
 import torch
-from tqdm import tqdm
-
 from dataset import make_dataloader
 from network import define_network
+from tqdm import tqdm
 from utils import add_hist, label_accuracy_score
 
 warnings.filterwarnings("ignore")
@@ -70,7 +69,6 @@ def validation(epoch, model, data_loader, criterion, device):
 
         hist = np.zeros((n_class, n_class))
         for step, (images, masks, _) in enumerate(data_loader):
-
             images = torch.stack(images)
             masks = torch.stack(masks).long()
 

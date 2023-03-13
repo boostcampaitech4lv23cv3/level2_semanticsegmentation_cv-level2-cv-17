@@ -6,7 +6,6 @@ from .utils import to_cuda
 
 
 def test_da_head():
-
     inputs = [torch.randn(1, 16, 23, 23)]
     head = DAHead(in_channels=16, channels=8, num_classes=19, pam_channels=8)
     if torch.cuda.is_available():

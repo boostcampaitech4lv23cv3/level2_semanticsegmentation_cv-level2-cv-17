@@ -95,7 +95,6 @@ def main(args):
 
 
 def update_dataset(index, mode, input_json, output_dir):
-
     with open(input_json) as file:
         data = json.load(file)
 

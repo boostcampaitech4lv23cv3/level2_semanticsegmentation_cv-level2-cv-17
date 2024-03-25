@@ -17,18 +17,31 @@ class LoveDADataset(CustomDataset):
     ``reduce_zero_label`` should be set to True. The ``img_suffix`` and
     ``seg_map_suffix`` are both fixed to '.png'.
     """
-    CLASSES = ('background', 'building', 'road', 'water', 'barren', 'forest',
-               'agricultural')
 
-    PALETTE = [[255, 255, 255], [255, 0, 0], [255, 255, 0], [0, 0, 255],
-               [159, 129, 183], [0, 255, 0], [255, 195, 128]]
+    CLASSES = (
+        "background",
+        "building",
+        "road",
+        "water",
+        "barren",
+        "forest",
+        "agricultural",
+    )
+
+    PALETTE = [
+        [255, 255, 255],
+        [255, 0, 0],
+        [255, 255, 0],
+        [0, 0, 255],
+        [159, 129, 183],
+        [0, 255, 0],
+        [255, 195, 128],
+    ]
 
     def __init__(self, **kwargs):
-        super(LoveDADataset, self).__init__(
-            img_suffix='.png',
-            seg_map_suffix='.png',
-            reduce_zero_label=True,
-            **kwargs)
+        super().__init__(
+            img_suffix=".png", seg_map_suffix=".png", reduce_zero_label=True, **kwargs
+        )
 
     def results2img(self, results, imgfile_prefix, indices=None):
         """Write the segmentation results to images.
@@ -52,10 +65,10 @@ class LoveDADataset(CustomDataset):
         result_files = []
         for result, idx in zip(results, indices):
 
-            filename = self.img_infos[idx]['filename']
+            filename = self.img_infos[idx]["filename"]
             basename = osp.splitext(osp.basename(filename))[0]
 
-            png_filename = osp.join(imgfile_prefix, f'{basename}.png')
+            png_filename = osp.join(imgfile_prefix, f"{basename}.png")
 
             # The  index range of official requirement is from 0 to 6.
             output = Image.fromarray(result.astype(np.uint8))
@@ -84,8 +97,8 @@ class LoveDADataset(CustomDataset):
         if indices is None:
             indices = list(range(len(self)))
 
-        assert isinstance(results, list), 'results must be a list.'
-        assert isinstance(indices, list), 'indices must be a list.'
+        assert isinstance(results, list), "results must be a list."
+        assert isinstance(indices, list), "indices must be a list."
 
         result_files = self.results2img(results, imgfile_prefix, indices)
 

@@ -4,10 +4,9 @@ from argparse import ArgumentParser
 
 import numpy as np
 import torch
-from tqdm import tqdm
-
 from dataset import make_dataloader
 from network import define_network
+from tqdm import tqdm
 from utils import add_hist, label_accuracy_score
 
 warnings.filterwarnings("ignore")

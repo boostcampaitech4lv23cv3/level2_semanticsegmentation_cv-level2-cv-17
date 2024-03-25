@@ -23,23 +23,25 @@ def _demo_mm_inputs(input_shape=(1, 3, 8, 16), num_classes=10):
     rng = np.random.RandomState(0)
 
     imgs = rng.rand(*input_shape)
-    segs = rng.randint(
-        low=0, high=num_classes - 1, size=(N, 1, H, W)).astype(np.uint8)
+    segs = rng.randint(low=0, high=num_classes - 1, size=(N, 1, H, W)).astype(np.uint8)
 
-    img_metas = [{
-        'img_shape': (H, W, C),
-        'ori_shape': (H, W, C),
-        'pad_shape': (H, W, C),
-        'filename': '<demo>.png',
-        'scale_factor': 1.0,
-        'flip': False,
-        'flip_direction': 'horizontal'
-    } for _ in range(N)]
+    img_metas = [
+        {
+            "img_shape": (H, W, C),
+            "ori_shape": (H, W, C),
+            "pad_shape": (H, W, C),
+            "filename": "<demo>.png",
+            "scale_factor": 1.0,
+            "flip": False,
+            "flip_direction": "horizontal",
+        }
+        for _ in range(N)
+    ]
 
     mm_inputs = {
-        'imgs': torch.FloatTensor(imgs),
-        'img_metas': img_metas,
-        'gt_semantic_seg': torch.LongTensor(segs)
+        "imgs": torch.FloatTensor(imgs),
+        "img_metas": img_metas,
+        "gt_semantic_seg": torch.LongTensor(segs),
     }
     return mm_inputs
 
@@ -48,7 +50,7 @@ def _demo_mm_inputs(input_shape=(1, 3, 8, 16), num_classes=10):
 class ExampleBackbone(nn.Module):
 
     def __init__(self):
-        super(ExampleBackbone, self).__init__()
+        super().__init__()
         self.conv = nn.Conv2d(3, 3, 3)
 
     def init_weights(self, pretrained=None):
@@ -62,7 +64,7 @@ class ExampleBackbone(nn.Module):
 class ExampleDecodeHead(BaseDecodeHead):
 
     def __init__(self):
-        super(ExampleDecodeHead, self).__init__(3, 3, num_classes=19)
+        super().__init__(3, 3, num_classes=19)
 
     def forward(self, inputs):
         return self.cls_seg(inputs[0])
@@ -72,7 +74,7 @@ class ExampleDecodeHead(BaseDecodeHead):
 class ExampleCascadeDecodeHead(BaseCascadeDecodeHead):
 
     def __init__(self):
-        super(ExampleCascadeDecodeHead, self).__init__(3, 3, num_classes=19)
+        super().__init__(3, 3, num_classes=19)
 
     def forward(self, inputs, prev_out):
         return self.cls_seg(inputs[0])
@@ -86,9 +88,9 @@ def _segmentor_forward_train_test(segmentor):
     # batch_size=2 for BatchNorm
     mm_inputs = _demo_mm_inputs(num_classes=num_classes)
 
-    imgs = mm_inputs.pop('imgs')
-    img_metas = mm_inputs.pop('img_metas')
-    gt_semantic_seg = mm_inputs['gt_semantic_seg']
+    imgs = mm_inputs.pop("imgs")
+    img_metas = mm_inputs.pop("img_metas")
+    gt_semantic_seg = mm_inputs["gt_semantic_seg"]
 
     # convert to cuda Tensor if applicable
     if torch.cuda.is_available():
@@ -98,28 +100,29 @@ def _segmentor_forward_train_test(segmentor):
 
     # Test forward train
     losses = segmentor.forward(
-        imgs, img_metas, gt_semantic_seg=gt_semantic_seg, return_loss=True)
+        imgs, img_metas, gt_semantic_seg=gt_semantic_seg, return_loss=True
+    )
     assert isinstance(losses, dict)
 
     # Test train_step
-    data_batch = dict(
-        img=imgs, img_metas=img_metas, gt_semantic_seg=gt_semantic_seg)
+    data_batch = dict(img=imgs, img_metas=img_metas, gt_semantic_seg=gt_semantic_seg)
     outputs = segmentor.train_step(data_batch, None)
     assert isinstance(outputs, dict)
-    assert 'loss' in outputs
-    assert 'log_vars' in outputs
-    assert 'num_samples' in outputs
+    assert "loss" in outputs
+    assert "log_vars" in outputs
+    assert "num_samples" in outputs
 
     # Test val_step
     with torch.no_grad():
         segmentor.eval()
         data_batch = dict(
-            img=imgs, img_metas=img_metas, gt_semantic_seg=gt_semantic_seg)
+            img=imgs, img_metas=img_metas, gt_semantic_seg=gt_semantic_seg
+        )
         outputs = segmentor.val_step(data_batch, None)
         assert isinstance(outputs, dict)
-        assert 'loss' in outputs
-        assert 'log_vars' in outputs
-        assert 'num_samples' in outputs
+        assert "loss" in outputs
+        assert "log_vars" in outputs
+        assert "num_samples" in outputs
 
     # Test forward simple test
     with torch.no_grad():

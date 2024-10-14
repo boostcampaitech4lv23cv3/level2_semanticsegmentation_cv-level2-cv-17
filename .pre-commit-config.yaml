@@ -2,7 +2,7 @@
 # See https://pre-commit.com/hooks.html for more hooks
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: check-ast
       - id: check-toml
@@ -21,7 +21,7 @@ repos:
       - id: check-merge-conflict
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.0
+    rev: v3.18.0
     hooks:
       - id: pyupgrade
         args:
@@ -29,7 +29,7 @@ repos:
           - --keep-runtime-typing
 
   - repo: https://github.com/PyCQA/autoflake
-    rev: v2.0.0
+    rev: v2.3.1
     hooks:
       - id: autoflake
         args:
@@ -43,7 +43,7 @@ repos:
           - __init__.py
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+    rev: 5.13.2
     hooks:
       - id: isort
         args:
@@ -56,7 +56,7 @@ repos:
           - --gitignore
 
   - repo: https://github.com/psf/black
-    rev: 22.10.0
+    rev: 24.10.0
     hooks:
       - id: black
         args:
@@ -65,7 +65,7 @@ repos:
           - --color
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 7.1.1
     hooks:
       - id: flake8
         args:

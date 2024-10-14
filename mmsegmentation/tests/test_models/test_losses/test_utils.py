@@ -12,33 +12,33 @@ def test_weight_reduce_loss():
     weight[:, :, :2, :2] = 1
 
     # test reduce_loss()
-    reduced = reduce_loss(loss, 'none')
+    reduced = reduce_loss(loss, "none")
     assert reduced is loss
 
-    reduced = reduce_loss(loss, 'mean')
+    reduced = reduce_loss(loss, "mean")
     np.testing.assert_almost_equal(reduced.numpy(), loss.mean())
 
-    reduced = reduce_loss(loss, 'sum')
+    reduced = reduce_loss(loss, "sum")
     np.testing.assert_almost_equal(reduced.numpy(), loss.sum())
 
     # test weight_reduce_loss()
-    reduced = weight_reduce_loss(loss, weight=None, reduction='none')
+    reduced = weight_reduce_loss(loss, weight=None, reduction="none")
     assert reduced is loss
 
-    reduced = weight_reduce_loss(loss, weight=weight, reduction='mean')
+    reduced = weight_reduce_loss(loss, weight=weight, reduction="mean")
     target = (loss * weight).mean()
     np.testing.assert_almost_equal(reduced.numpy(), target)
 
-    reduced = weight_reduce_loss(loss, weight=weight, reduction='sum')
+    reduced = weight_reduce_loss(loss, weight=weight, reduction="sum")
     np.testing.assert_almost_equal(reduced.numpy(), (loss * weight).sum())
 
     with pytest.raises(AssertionError):
         weight_wrong = weight[0, 0, ...]
-        weight_reduce_loss(loss, weight=weight_wrong, reduction='mean')
+        weight_reduce_loss(loss, weight=weight_wrong, reduction="mean")
 
     with pytest.raises(AssertionError):
         weight_wrong = weight[:, 0:2, ...]
-        weight_reduce_loss(loss, weight=weight_wrong, reduction='mean')
+        weight_reduce_loss(loss, weight=weight_wrong, reduction="mean")
 
 
 def test_accuracy():
@@ -49,9 +49,15 @@ def test_accuracy():
     acc = accuracy(pred, label)
     assert acc.item() == 0
 
-    pred = torch.Tensor([[0.2, 0.3, 0.6, 0.5], [0.1, 0.1, 0.2, 0.6],
-                         [0.9, 0.0, 0.0, 0.1], [0.4, 0.7, 0.1, 0.1],
-                         [0.0, 0.0, 0.99, 0]])
+    pred = torch.Tensor(
+        [
+            [0.2, 0.3, 0.6, 0.5],
+            [0.1, 0.1, 0.2, 0.6],
+            [0.9, 0.0, 0.0, 0.1],
+            [0.4, 0.7, 0.1, 0.1],
+            [0.0, 0.0, 0.99, 0],
+        ]
+    )
     # test for ignore_index
     true_label = torch.Tensor([2, 3, 0, 1, 2]).long()
     accuracy = Accuracy(topk=1, ignore_index=None)
@@ -114,7 +120,7 @@ def test_accuracy():
 
     # wrong topk type
     with pytest.raises(AssertionError):
-        accuracy = Accuracy(topk='wrong type')
+        accuracy = Accuracy(topk="wrong type")
         accuracy(pred, true_label)
 
     # label size is larger than required

@@ -19,7 +19,7 @@ class PAM(_SelfAttentionBlock):
     """
 
     def __init__(self, in_channels, channels):
-        super(PAM, self).__init__(
+        super().__init__(
             key_in_channels=in_channels,
             query_in_channels=in_channels,
             channels=channels,
@@ -35,13 +35,14 @@ class PAM(_SelfAttentionBlock):
             with_out=False,
             conv_cfg=None,
             norm_cfg=None,
-            act_cfg=None)
+            act_cfg=None,
+        )
 
         self.gamma = Scale(0)
 
     def forward(self, x):
         """Forward function."""
-        out = super(PAM, self).forward(x, x)
+        out = super().forward(x, x)
 
         out = self.gamma(out) + x
         return out
@@ -51,7 +52,7 @@ class CAM(nn.Module):
     """Channel Attention Module (CAM)"""
 
     def __init__(self):
-        super(CAM, self).__init__()
+        super().__init__()
         self.gamma = Scale(0)
 
     def forward(self, x):
@@ -60,8 +61,7 @@ class CAM(nn.Module):
         proj_query = x.view(batch_size, channels, -1)
         proj_key = x.view(batch_size, channels, -1).permute(0, 2, 1)
         energy = torch.bmm(proj_query, proj_key)
-        energy_new = torch.max(
-            energy, -1, keepdim=True)[0].expand_as(energy) - energy
+        energy_new = torch.max(energy, -1, keepdim=True)[0].expand_as(energy) - energy
         attention = F.softmax(energy_new, dim=-1)
         proj_value = x.view(batch_size, channels, -1)
 
@@ -84,7 +84,7 @@ class DAHead(BaseDecodeHead):
     """
 
     def __init__(self, pam_channels, **kwargs):
-        super(DAHead, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.pam_channels = pam_channels
         self.pam_in_conv = ConvModule(
             self.in_channels,
@@ -93,7 +93,8 @@ class DAHead(BaseDecodeHead):
             padding=1,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg)
+            act_cfg=self.act_cfg,
+        )
         self.pam = PAM(self.channels, pam_channels)
         self.pam_out_conv = ConvModule(
             self.channels,
@@ -102,9 +103,9 @@ class DAHead(BaseDecodeHead):
             padding=1,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg)
-        self.pam_conv_seg = nn.Conv2d(
-            self.channels, self.num_classes, kernel_size=1)
+            act_cfg=self.act_cfg,
+        )
+        self.pam_conv_seg = nn.Conv2d(self.channels, self.num_classes, kernel_size=1)
 
         self.cam_in_conv = ConvModule(
             self.in_channels,
@@ -113,7 +114,8 @@ class DAHead(BaseDecodeHead):
             padding=1,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg)
+            act_cfg=self.act_cfg,
+        )
         self.cam = CAM()
         self.cam_out_conv = ConvModule(
             self.channels,
@@ -122,9 +124,9 @@ class DAHead(BaseDecodeHead):
             padding=1,
             conv_cfg=self.conv_cfg,
             norm_cfg=self.norm_cfg,
-            act_cfg=self.act_cfg)
-        self.cam_conv_seg = nn.Conv2d(
-            self.channels, self.num_classes, kernel_size=1)
+            act_cfg=self.act_cfg,
+        )
+        self.cam_conv_seg = nn.Conv2d(self.channels, self.num_classes, kernel_size=1)
 
     def pam_cls_seg(self, feat):
         """PAM feature classification."""
@@ -166,14 +168,7 @@ class DAHead(BaseDecodeHead):
         """Compute ``pam_cam``, ``pam``, ``cam`` loss."""
         pam_cam_seg_logit, pam_seg_logit, cam_seg_logit = seg_logit
         loss = dict()
-        loss.update(
-            add_prefix(
-                super(DAHead, self).losses(pam_cam_seg_logit, seg_label),
-                'pam_cam'))
-        loss.update(
-            add_prefix(
-                super(DAHead, self).losses(pam_seg_logit, seg_label), 'pam'))
-        loss.update(
-            add_prefix(
-                super(DAHead, self).losses(cam_seg_logit, seg_label), 'cam'))
+        loss.update(add_prefix(super().losses(pam_cam_seg_logit, seg_label), "pam_cam"))
+        loss.update(add_prefix(super().losses(pam_seg_logit, seg_label), "pam"))
+        loss.update(add_prefix(super().losses(cam_seg_logit, seg_label), "cam"))
         return loss

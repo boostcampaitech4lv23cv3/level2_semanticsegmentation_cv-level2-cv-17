@@ -1,5 +1,4 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-from __future__ import division
 from typing import Iterator, Optional
 
 import torch
@@ -27,14 +26,15 @@ class DistributedSampler(_DistributedSampler):
             processes in the distributed group. Default: ``0``.
     """
 
-    def __init__(self,
-                 dataset: Dataset,
-                 num_replicas: Optional[int] = None,
-                 rank: Optional[int] = None,
-                 shuffle: bool = True,
-                 seed=0) -> None:
-        super().__init__(
-            dataset, num_replicas=num_replicas, rank=rank, shuffle=shuffle)
+    def __init__(
+        self,
+        dataset: Dataset,
+        num_replicas: Optional[int] = None,
+        rank: Optional[int] = None,
+        shuffle: bool = True,
+        seed=0,
+    ) -> None:
+        super().__init__(dataset, num_replicas=num_replicas, rank=rank, shuffle=shuffle)
 
         # In distributed sampling, different ranks should sample
         # non-overlapped data in the dataset. Therefore, this function
@@ -47,8 +47,8 @@ class DistributedSampler(_DistributedSampler):
 
     def __iter__(self) -> Iterator:
         """
-         Yields:
-            Iterator: iterator of indices for rank.
+        Yields:
+           Iterator: iterator of indices for rank.
         """
         # deterministically shuffle based on epoch
         if self.shuffle:
@@ -63,11 +63,11 @@ class DistributedSampler(_DistributedSampler):
             indices = torch.arange(len(self.dataset)).tolist()
 
         # add extra samples to make it evenly divisible
-        indices += indices[:(self.total_size - len(indices))]
+        indices += indices[: (self.total_size - len(indices))]
         assert len(indices) == self.total_size
 
         # subsample
-        indices = indices[self.rank:self.total_size:self.num_replicas]
+        indices = indices[self.rank : self.total_size : self.num_replicas]
         assert len(indices) == self.num_samples
 
         return iter(indices)

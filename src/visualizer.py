@@ -5,6 +5,7 @@ References:
     - https://voxel51.com/docs/fiftyone/
     - https://voxel51.com/docs/fiftyone/user_guide/config.html
 """
+
 import fiftyone as fo
 import typer
 from fiftyone.types import COCODetectionDataset

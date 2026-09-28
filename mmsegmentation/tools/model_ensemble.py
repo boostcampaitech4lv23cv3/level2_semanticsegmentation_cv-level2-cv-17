@@ -25,9 +25,7 @@ def main(args):
     cfg = mmcv.Config.fromfile(configs[0])
 
     if args.aug_test:
-        cfg.data.test.pipeline[1].img_ratios = [
-            0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0
-        ]
+        cfg.data.test.pipeline[1].img_ratios = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0]
         cfg.data.test.pipeline[1].flip = True
     else:
         cfg.data.test.pipeline[1].img_ratios = [1.0]
@@ -50,10 +48,10 @@ def main(args):
         cfg.model.pretrained = None
         cfg.data.test.test_mode = True
 
-        model = build_segmentor(cfg.model, test_cfg=cfg.get('test_cfg'))
-        if cfg.get('fp16', None):
+        model = build_segmentor(cfg.model, test_cfg=cfg.get("test_cfg"))
+        if cfg.get("fp16", None):
             wrap_fp16_model(model)
-        load_checkpoint(model, ckpt, map_location='cpu')
+        load_checkpoint(model, ckpt, map_location="cpu")
         torch.cuda.empty_cache()
         tmpdir = args.out
         mmcv.mkdir_or_exist(tmpdir)
@@ -69,7 +67,8 @@ def main(args):
 
         for model in models:
             x, _ = scatter_kwargs(
-                inputs=data, kwargs=None, target_gpus=model.device_ids)
+                inputs=data, kwargs=None, target_gpus=model.device_ids
+            )
             if args.aug_test:
                 logits = model.module.aug_test_logits(**x[0])
             else:
@@ -83,39 +82,42 @@ def main(args):
         pred = result_logits.argmax(axis=1).squeeze()
         img_info = dataset.img_infos[batch_indices[0]]
         file_name = os.path.join(
-            tmpdir, img_info['ann']['seg_map'].split(os.path.sep)[-1])
+            tmpdir, img_info["ann"]["seg_map"].split(os.path.sep)[-1]
+        )
         Image.fromarray(pred.astype(np.uint8)).save(file_name)
         prog_bar.update()
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description='Model Ensemble with logits result')
+    parser = argparse.ArgumentParser(description="Model Ensemble with logits result")
     parser.add_argument(
-        '--config', type=str, nargs='+', help='ensemble config files path')
+        "--config", type=str, nargs="+", help="ensemble config files path"
+    )
     parser.add_argument(
-        '--checkpoint',
-        type=str,
-        nargs='+',
-        help='ensemble checkpoint files path')
+        "--checkpoint", type=str, nargs="+", help="ensemble checkpoint files path"
+    )
     parser.add_argument(
-        '--aug-test',
-        action='store_true',
-        help='control ensemble aug-result or single-result (default)')
+        "--aug-test",
+        action="store_true",
+        help="control ensemble aug-result or single-result (default)",
+    )
     parser.add_argument(
-        '--out', type=str, default='results', help='the dir to save result')
+        "--out", type=str, default="results", help="the dir to save result"
+    )
     parser.add_argument(
-        '--gpus', type=int, nargs='+', default=[0], help='id of gpu to use')
+        "--gpus", type=int, nargs="+", default=[0], help="id of gpu to use"
+    )
 
     args = parser.parse_args()
-    assert len(args.config) == len(args.checkpoint), \
-        f'len(config) must equal len(checkpoint), ' \
-        f'but len(config) = {len(args.config)} and' \
-        f'len(checkpoint) = {len(args.checkpoint)}'
+    assert len(args.config) == len(args.checkpoint), (
+        f"len(config) must equal len(checkpoint), "
+        f"but len(config) = {len(args.config)} and"
+        f"len(checkpoint) = {len(args.checkpoint)}"
+    )
     assert args.out, "ensemble result out-dir can't be None"
     return args
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse_args()
     main(args)

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from mmcv import Config
 from mmcv.parallel import MMDataParallel
-from mmcv.runner import load_checkpoint
+
 from mmseg.apis import single_gpu_test
 from mmseg.datasets import build_dataloader, build_dataset
 from mmseg.models import build_segmentor
@@ -36,7 +36,7 @@ def get_latest(work_dir: Path) -> Union[str, None]:
     if not latest_file.exists():
         return None
 
-    with open(latest_file, "r", encoding="utf8") as f:
+    with open(latest_file, encoding="utf8") as f:
         path = f.read()
 
     return path
@@ -47,7 +47,7 @@ def get_last_checkpoint(work_dir: Path) -> Union[str, None]:
     if not latest_checkpoint_file.exists():
         return None
 
-    with open(latest_checkpoint_file, "r", encoding="utf8") as f:
+    with open(latest_checkpoint_file, encoding="utf8") as f:
         checkpoint_path = f.read()
 
     return checkpoint_path
@@ -107,7 +107,7 @@ def main():
 
     submission = pd.read_csv(SAMPLE_PATH, index_col=None)
 
-    with open(TEST_JSON_PATH, "r", encoding="utf8") as outfile:
+    with open(TEST_JSON_PATH, encoding="utf8") as outfile:
         datas = json.load(outfile)
 
     # PredictionString 대입

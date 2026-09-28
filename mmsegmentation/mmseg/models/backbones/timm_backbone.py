@@ -1,13 +1,13 @@
 # Copyright (c) OpenMMLab. All rights reserved.
-try:
-    import timm
-except ImportError:
-    timm = None
-
 from mmcv.cnn.bricks.registry import NORM_LAYERS
 from mmcv.runner import BaseModule
 
 from ..builder import BACKBONES
+
+try:
+    import timm
+except ImportError:
+    timm = None
 
 
 @BACKBONES.register_module()
@@ -30,16 +30,16 @@ class TIMMBackbone(BaseModule):
         model_name,
         features_only=True,
         pretrained=True,
-        checkpoint_path='',
+        checkpoint_path="",
         in_channels=3,
         init_cfg=None,
         **kwargs,
     ):
         if timm is None:
-            raise RuntimeError('timm is not installed')
-        super(TIMMBackbone, self).__init__(init_cfg)
-        if 'norm_layer' in kwargs:
-            kwargs['norm_layer'] = NORM_LAYERS.get(kwargs['norm_layer'])
+            raise RuntimeError("timm is not installed")
+        super().__init__(init_cfg)
+        if "norm_layer" in kwargs:
+            kwargs["norm_layer"] = NORM_LAYERS.get(kwargs["norm_layer"])
         self.timm_model = timm.create_model(
             model_name=model_name,
             features_only=features_only,

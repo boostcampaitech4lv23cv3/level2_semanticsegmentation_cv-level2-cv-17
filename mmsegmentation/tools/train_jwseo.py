@@ -18,12 +18,13 @@ from mmcv.cnn.utils import revert_sync_batchnorm
 from mmcv.runner import get_dist_info, init_dist
 from mmcv.utils import Config, DictAction, get_git_hash
 from mmcv.utils.config import ConfigDict
+from rich.console import Console
+
 from mmseg import __version__
 from mmseg.apis import init_random_seed, set_random_seed, train_segmentor
 from mmseg.datasets import build_dataset
 from mmseg.models import build_segmentor
 from mmseg.utils import collect_env, get_device, get_root_logger, setup_multi_processes
-from rich.console import Console
 
 KST_TZ = pytz.timezone("Asia/Seoul")
 GPU_ID = 0
@@ -48,7 +49,7 @@ def get_latest_checkpoint(work_dir: Path) -> Union[str, None]:
     if not latest_checkpoint_file.exists():
         return None
 
-    with open(latest_checkpoint_file, "r", encoding="utf8") as f:
+    with open(latest_checkpoint_file, encoding="utf8") as f:
         checkpoint_path = f.read()
 
     return checkpoint_path

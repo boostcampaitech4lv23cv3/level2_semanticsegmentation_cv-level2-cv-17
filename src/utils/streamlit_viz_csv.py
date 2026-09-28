@@ -124,13 +124,11 @@ def save_csv(section):
     path = os.path.join(CSV_DIR, st.session_state.upldd_file.name)
 
     if os.path.exists(path):
-        section.error(
-            f"\
+        section.error(f"\
                 `{st.session_state.upldd_file.name}`\
                 already exists in `{CSV_DIR}`.\
                 Please change the name of the file to save.\
-            "
-        )
+            ")
 
     else:
         with open(path, "wb") as f:
@@ -219,12 +217,10 @@ def generate_mask(section, csv):
     mask = np.zeros((256, 256, 3))
     info = csv.loc[csv["image_id"] == image_name]
     if len(info) == 0:
-        section.error(
-            f"\
+        section.error(f"\
                 Cannot find `{image_name}`\
                 from `{csv_name}`!\
-                Mask has not been generated!"
-        )
+                Mask has not been generated!")
     else:
         pixels = info["PredictionString"][img_idx].split()
         for i, category in enumerate(pixels):

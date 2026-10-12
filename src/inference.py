@@ -5,10 +5,9 @@ import albumentations as A
 import numpy as np
 import pandas as pd
 import torch
-from tqdm import tqdm
-
 from dataset import make_dataloader
 from network import define_network
+from tqdm import tqdm
 
 warnings.filterwarnings("ignore")
 

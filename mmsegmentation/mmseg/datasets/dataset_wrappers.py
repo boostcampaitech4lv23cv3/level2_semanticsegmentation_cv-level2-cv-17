@@ -27,17 +27,18 @@ class ConcatDataset(_ConcatDataset):
     """
 
     def __init__(self, datasets, separate_eval=True):
-        super(ConcatDataset, self).__init__(datasets)
+        super().__init__(datasets)
         self.CLASSES = datasets[0].CLASSES
         self.PALETTE = datasets[0].PALETTE
         self.separate_eval = separate_eval
-        assert separate_eval in [True, False], \
-            f'separate_eval can only be True or False,' \
-            f'but get {separate_eval}'
+        assert separate_eval in [True, False], (
+            f"separate_eval can only be True or False," f"but get {separate_eval}"
+        )
         if any([isinstance(ds, CityscapesDataset) for ds in datasets]):
             raise NotImplementedError(
-                'Evaluating ConcatDataset containing CityscapesDataset'
-                'is not supported!')
+                "Evaluating ConcatDataset containing CityscapesDataset"
+                "is not supported!"
+            )
 
     def evaluate(self, results, logger=None, **kwargs):
         """Evaluate the results.
@@ -54,53 +55,60 @@ class ConcatDataset(_ConcatDataset):
                 or each separate
             dataset if `self.separate_eval=True`.
         """
-        assert len(results) == self.cumulative_sizes[-1], \
-            ('Dataset and results have different sizes: '
-             f'{self.cumulative_sizes[-1]} v.s. {len(results)}')
+        assert len(results) == self.cumulative_sizes[-1], (
+            "Dataset and results have different sizes: "
+            f"{self.cumulative_sizes[-1]} v.s. {len(results)}"
+        )
 
         # Check whether all the datasets support evaluation
         for dataset in self.datasets:
-            assert hasattr(dataset, 'evaluate'), \
-                f'{type(dataset)} does not implement evaluate function'
+            assert hasattr(
+                dataset, "evaluate"
+            ), f"{type(dataset)} does not implement evaluate function"
 
         if self.separate_eval:
             dataset_idx = -1
             total_eval_results = dict()
             for size, dataset in zip(self.cumulative_sizes, self.datasets):
-                start_idx = 0 if dataset_idx == -1 else \
-                    self.cumulative_sizes[dataset_idx]
+                start_idx = (
+                    0 if dataset_idx == -1 else self.cumulative_sizes[dataset_idx]
+                )
                 end_idx = self.cumulative_sizes[dataset_idx + 1]
 
                 results_per_dataset = results[start_idx:end_idx]
                 print_log(
-                    f'\nEvaluateing {dataset.img_dir} with '
-                    f'{len(results_per_dataset)} images now',
-                    logger=logger)
+                    f"\nEvaluateing {dataset.img_dir} with "
+                    f"{len(results_per_dataset)} images now",
+                    logger=logger,
+                )
 
                 eval_results_per_dataset = dataset.evaluate(
-                    results_per_dataset, logger=logger, **kwargs)
+                    results_per_dataset, logger=logger, **kwargs
+                )
                 dataset_idx += 1
                 for k, v in eval_results_per_dataset.items():
-                    total_eval_results.update({f'{dataset_idx}_{k}': v})
+                    total_eval_results.update({f"{dataset_idx}_{k}": v})
 
             return total_eval_results
 
-        if len(set([type(ds) for ds in self.datasets])) != 1:
+        if len({type(ds) for ds in self.datasets}) != 1:
             raise NotImplementedError(
-                'All the datasets should have same types when '
-                'self.separate_eval=False')
+                "All the datasets should have same types when "
+                "self.separate_eval=False"
+            )
         else:
-            if mmcv.is_list_of(results, np.ndarray) or mmcv.is_list_of(
-                    results, str):
+            if mmcv.is_list_of(results, np.ndarray) or mmcv.is_list_of(results, str):
                 # merge the generators of gt_seg_maps
                 gt_seg_maps = chain(
-                    *[dataset.get_gt_seg_maps() for dataset in self.datasets])
+                    *[dataset.get_gt_seg_maps() for dataset in self.datasets]
+                )
             else:
                 # if the results are `pre_eval` results,
                 # we do not need gt_seg_maps to evaluate
                 gt_seg_maps = None
             eval_results = self.datasets[0].evaluate(
-                results, gt_seg_maps=gt_seg_maps, logger=logger, **kwargs)
+                results, gt_seg_maps=gt_seg_maps, logger=logger, **kwargs
+            )
             return eval_results
 
     def get_dataset_idx_and_sample_idx(self, indice):
@@ -117,7 +125,8 @@ class ConcatDataset(_ConcatDataset):
         if indice < 0:
             if -indice > len(self):
                 raise ValueError(
-                    'absolute value of index should not exceed dataset length')
+                    "absolute value of index should not exceed dataset length"
+                )
             indice = len(self) + indice
         dataset_idx = bisect.bisect_right(self.cumulative_sizes, indice)
         if dataset_idx == 0:
@@ -131,18 +140,18 @@ class ConcatDataset(_ConcatDataset):
         if indices is None:
             indices = list(range(len(self)))
 
-        assert isinstance(results, list), 'results must be a list.'
-        assert isinstance(indices, list), 'indices must be a list.'
+        assert isinstance(results, list), "results must be a list."
+        assert isinstance(indices, list), "indices must be a list."
 
         ret_res = []
         for i, indice in enumerate(indices):
-            dataset_idx, sample_idx = self.get_dataset_idx_and_sample_idx(
-                indice)
+            dataset_idx, sample_idx = self.get_dataset_idx_and_sample_idx(indice)
             res = self.datasets[dataset_idx].format_results(
                 [results[i]],
-                imgfile_prefix + f'/{dataset_idx}',
+                imgfile_prefix + f"/{dataset_idx}",
                 indices=[sample_idx],
-                **kwargs)
+                **kwargs,
+            )
             ret_res.append(res)
         return sum(ret_res, [])
 
@@ -155,15 +164,14 @@ class ConcatDataset(_ConcatDataset):
             preds = [preds]
         ret_res = []
         for i, indice in enumerate(indices):
-            dataset_idx, sample_idx = self.get_dataset_idx_and_sample_idx(
-                indice)
+            dataset_idx, sample_idx = self.get_dataset_idx_and_sample_idx(indice)
             res = self.datasets[dataset_idx].pre_eval(preds[i], sample_idx)
             ret_res.append(res)
         return sum(ret_res, [])
 
 
 @DATASETS.register_module()
-class RepeatDataset(object):
+class RepeatDataset:
     """A wrapper of repeated dataset.
 
     The length of repeated dataset will be `times` larger than the original
@@ -214,21 +222,20 @@ class MultiImageMixDataset:
     def __init__(self, dataset, pipeline, skip_type_keys=None):
         assert isinstance(pipeline, collections.abc.Sequence)
         if skip_type_keys is not None:
-            assert all([
-                isinstance(skip_type_key, str)
-                for skip_type_key in skip_type_keys
-            ])
+            assert all(
+                [isinstance(skip_type_key, str) for skip_type_key in skip_type_keys]
+            )
         self._skip_type_keys = skip_type_keys
 
         self.pipeline = []
         self.pipeline_types = []
         for transform in pipeline:
             if isinstance(transform, dict):
-                self.pipeline_types.append(transform['type'])
+                self.pipeline_types.append(transform["type"])
                 transform = build_from_cfg(transform, PIPELINES)
                 self.pipeline.append(transform)
             else:
-                raise TypeError('pipeline must be a dict')
+                raise TypeError("pipeline must be a dict")
 
         self.dataset = dataset
         self.CLASSES = dataset.CLASSES
@@ -240,25 +247,24 @@ class MultiImageMixDataset:
 
     def __getitem__(self, idx):
         results = copy.deepcopy(self.dataset[idx])
-        for (transform, transform_type) in zip(self.pipeline,
-                                               self.pipeline_types):
-            if self._skip_type_keys is not None and \
-                    transform_type in self._skip_type_keys:
+        for transform, transform_type in zip(self.pipeline, self.pipeline_types):
+            if (
+                self._skip_type_keys is not None
+                and transform_type in self._skip_type_keys
+            ):
                 continue
 
-            if hasattr(transform, 'get_indexes'):
+            if hasattr(transform, "get_indexes"):
                 indexes = transform.get_indexes(self.dataset)
                 if not isinstance(indexes, collections.abc.Sequence):
                     indexes = [indexes]
-                mix_results = [
-                    copy.deepcopy(self.dataset[index]) for index in indexes
-                ]
-                results['mix_results'] = mix_results
+                mix_results = [copy.deepcopy(self.dataset[index]) for index in indexes]
+                results["mix_results"] = mix_results
 
             results = transform(results)
 
-            if 'mix_results' in results:
-                results.pop('mix_results')
+            if "mix_results" in results:
+                results.pop("mix_results")
 
         return results
 
@@ -271,7 +277,5 @@ class MultiImageMixDataset:
             skip_type_keys (list[str], optional): Sequence of type
                 string to be skip pipeline.
         """
-        assert all([
-            isinstance(skip_type_key, str) for skip_type_key in skip_type_keys
-        ])
+        assert all([isinstance(skip_type_key, str) for skip_type_key in skip_type_keys])
         self._skip_type_keys = skip_type_keys

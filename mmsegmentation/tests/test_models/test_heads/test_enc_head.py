@@ -19,11 +19,8 @@ def test_enc_head():
     # w.o se_loss, w.o. lateral
     inputs = [torch.randn(1, 8, 21, 21)]
     head = EncHead(
-        in_channels=[8],
-        channels=4,
-        use_se_loss=False,
-        num_classes=19,
-        in_index=[-1])
+        in_channels=[8], channels=4, use_se_loss=False, num_classes=19, in_index=[-1]
+    )
     if torch.cuda.is_available():
         head, inputs = to_cuda(head, inputs)
     outputs = head(inputs)
@@ -36,7 +33,8 @@ def test_enc_head():
         channels=4,
         add_lateral=True,
         num_classes=19,
-        in_index=[-2, -1])
+        in_index=[-2, -1],
+    )
     if torch.cuda.is_available():
         head, inputs = to_cuda(head, inputs)
     outputs = head(inputs)

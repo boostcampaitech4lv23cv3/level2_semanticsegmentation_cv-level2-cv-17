@@ -24,7 +24,7 @@ class ExampleDataset(Dataset):
 class ExampleModel(nn.Module):
 
     def __init__(self):
-        super(ExampleModel, self).__init__()
+        super().__init__()
         self.test_cfg = None
         self.conv = nn.Conv2d(3, 3, 3)
 
@@ -48,26 +48,23 @@ def test_single_gpu():
     assert len(results) == 1
     pred = np.load(results[0])
     assert isinstance(pred, np.ndarray)
-    assert pred.shape == (1, )
+    assert pred.shape == (1,)
     assert pred[0] == 1
 
-    shutil.rmtree('.efficient_test')
+    shutil.rmtree(".efficient_test")
 
     # Test pre_eval
-    test_dataset.pre_eval = MagicMock(return_value=['success'])
+    test_dataset.pre_eval = MagicMock(return_value=["success"])
     results = single_gpu_test(model, data_loader, pre_eval=True)
-    assert results == ['success']
+    assert results == ["success"]
 
     # Test format_only
-    test_dataset.format_results = MagicMock(return_value=['success'])
+    test_dataset.format_results = MagicMock(return_value=["success"])
     results = single_gpu_test(model, data_loader, format_only=True)
-    assert results == ['success']
+    assert results == ["success"]
 
     # efficient_test, pre_eval and format_only are mutually exclusive
     with pytest.raises(AssertionError):
         single_gpu_test(
-            model,
-            dataloader,
-            efficient_test=True,
-            format_only=True,
-            pre_eval=True)
+            model, dataloader, efficient_test=True, format_only=True, pre_eval=True
+        )

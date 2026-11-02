@@ -14,50 +14,44 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
     """Base class for segmentors."""
 
     def __init__(self, init_cfg=None):
-        super(BaseSegmentor, self).__init__(init_cfg)
+        super().__init__(init_cfg)
         self.fp16_enabled = False
 
     @property
     def with_neck(self):
         """bool: whether the segmentor has neck"""
-        return hasattr(self, 'neck') and self.neck is not None
+        return hasattr(self, "neck") and self.neck is not None
 
     @property
     def with_auxiliary_head(self):
         """bool: whether the segmentor has auxiliary head"""
-        return hasattr(self,
-                       'auxiliary_head') and self.auxiliary_head is not None
+        return hasattr(self, "auxiliary_head") and self.auxiliary_head is not None
 
     @property
     def with_decode_head(self):
         """bool: whether the segmentor has decode head"""
-        return hasattr(self, 'decode_head') and self.decode_head is not None
+        return hasattr(self, "decode_head") and self.decode_head is not None
 
     @abstractmethod
     def extract_feat(self, imgs):
         """Placeholder for extract features from images."""
-        pass
 
     @abstractmethod
     def encode_decode(self, img, img_metas):
         """Placeholder for encode images with backbone and decode into a
         semantic segmentation map of the same size as input."""
-        pass
 
     @abstractmethod
     def forward_train(self, imgs, img_metas, **kwargs):
         """Placeholder for Forward function for training."""
-        pass
 
     @abstractmethod
     def simple_test(self, img, img_meta, **kwargs):
         """Placeholder for single image test."""
-        pass
 
     @abstractmethod
     def aug_test(self, imgs, img_metas, **kwargs):
         """Placeholder for augmentation test."""
-        pass
 
     def forward_test(self, imgs, img_metas, **kwargs):
         """
@@ -69,23 +63,24 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
                 augs (multiscale, flip, etc.) and the inner list indicates
                 images in a batch.
         """
-        for var, name in [(imgs, 'imgs'), (img_metas, 'img_metas')]:
+        for var, name in [(imgs, "imgs"), (img_metas, "img_metas")]:
             if not isinstance(var, list):
-                raise TypeError(f'{name} must be a list, but got '
-                                f'{type(var)}')
+                raise TypeError(f"{name} must be a list, but got " f"{type(var)}")
 
         num_augs = len(imgs)
         if num_augs != len(img_metas):
-            raise ValueError(f'num of augmentations ({len(imgs)}) != '
-                             f'num of image meta ({len(img_metas)})')
+            raise ValueError(
+                f"num of augmentations ({len(imgs)}) != "
+                f"num of image meta ({len(img_metas)})"
+            )
         # all images in the same aug batch all of the same ori_shape and pad
         # shape
         for img_meta in img_metas:
-            ori_shapes = [_['ori_shape'] for _ in img_meta]
+            ori_shapes = [_["ori_shape"] for _ in img_meta]
             assert all(shape == ori_shapes[0] for shape in ori_shapes)
-            img_shapes = [_['img_shape'] for _ in img_meta]
+            img_shapes = [_["img_shape"] for _ in img_meta]
             assert all(shape == img_shapes[0] for shape in img_shapes)
-            pad_shapes = [_['pad_shape'] for _ in img_meta]
+            pad_shapes = [_["pad_shape"] for _ in img_meta]
             assert all(shape == pad_shapes[0] for shape in pad_shapes)
 
         if num_augs == 1:
@@ -93,7 +88,7 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
         else:
             return self.aug_test(imgs, img_metas, **kwargs)
 
-    @auto_fp16(apply_to=('img', ))
+    @auto_fp16(apply_to=("img",))
     def forward(self, img, img_metas, return_loss=True, **kwargs):
         """Calls either :func:`forward_train` or :func:`forward_test` depending
         on whether ``return_loss`` is ``True``.
@@ -139,9 +134,8 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
         loss, log_vars = self._parse_losses(losses)
 
         outputs = dict(
-            loss=loss,
-            log_vars=log_vars,
-            num_samples=len(data_batch['img_metas']))
+            loss=loss, log_vars=log_vars, num_samples=len(data_batch["img_metas"])
+        )
 
         return outputs
 
@@ -157,13 +151,12 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
 
         log_vars_ = dict()
         for loss_name, loss_value in log_vars.items():
-            k = loss_name + '_val'
+            k = loss_name + "_val"
             log_vars_[k] = loss_value
 
         outputs = dict(
-            loss=loss,
-            log_vars=log_vars_,
-            num_samples=len(data_batch['img_metas']))
+            loss=loss, log_vars=log_vars_, num_samples=len(data_batch["img_metas"])
+        )
 
         return outputs
 
@@ -187,24 +180,27 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
             elif isinstance(loss_value, list):
                 log_vars[loss_name] = sum(_loss.mean() for _loss in loss_value)
             else:
-                raise TypeError(
-                    f'{loss_name} is not a tensor or list of tensors')
+                raise TypeError(f"{loss_name} is not a tensor or list of tensors")
 
-        loss = sum(_value for _key, _value in log_vars.items()
-                   if 'loss' in _key)
+        loss = sum(_value for _key, _value in log_vars.items() if "loss" in _key)
 
         # If the loss_vars has different length, raise assertion error
         # to prevent GPUs from infinite waiting.
         if dist.is_available() and dist.is_initialized():
             log_var_length = torch.tensor(len(log_vars), device=loss.device)
             dist.all_reduce(log_var_length)
-            message = (f'rank {dist.get_rank()}' +
-                       f' len(log_vars): {len(log_vars)}' + ' keys: ' +
-                       ','.join(log_vars.keys()) + '\n')
-            assert log_var_length == len(log_vars) * dist.get_world_size(), \
-                'loss log variables are different across GPUs!\n' + message
+            message = (
+                f"rank {dist.get_rank()}"
+                + f" len(log_vars): {len(log_vars)}"
+                + " keys: "
+                + ",".join(log_vars.keys())
+                + "\n"
+            )
+            assert log_var_length == len(log_vars) * dist.get_world_size(), (
+                "loss log variables are different across GPUs!\n" + message
+            )
 
-        log_vars['loss'] = loss
+        log_vars["loss"] = loss
         for loss_name, loss_value in log_vars.items():
             # reduce loss when distributed training
             if dist.is_available() and dist.is_initialized():
@@ -214,15 +210,17 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
 
         return loss, log_vars
 
-    def show_result(self,
-                    img,
-                    result,
-                    palette=None,
-                    win_name='',
-                    show=False,
-                    wait_time=0,
-                    out_file=None,
-                    opacity=0.5):
+    def show_result(
+        self,
+        img,
+        result,
+        palette=None,
+        win_name="",
+        show=False,
+        wait_time=0,
+        out_file=None,
+        opacity=0.5,
+    ):
         """Draw `result` over `img`.
 
         Args:
@@ -258,8 +256,7 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
                 state = np.random.get_state()
                 np.random.seed(42)
                 # random palette
-                palette = np.random.randint(
-                    0, 255, size=(len(self.CLASSES), 3))
+                palette = np.random.randint(0, 255, size=(len(self.CLASSES), 3))
                 np.random.set_state(state)
             else:
                 palette = self.PALETTE
@@ -286,6 +283,8 @@ class BaseSegmentor(BaseModule, metaclass=ABCMeta):
             mmcv.imwrite(img, out_file)
 
         if not (show or out_file):
-            warnings.warn('show==False and out_file is not specified, only '
-                          'result image will be returned')
+            warnings.warn(
+                "show==False and out_file is not specified, only "
+                "result image will be returned"
+            )
             return img

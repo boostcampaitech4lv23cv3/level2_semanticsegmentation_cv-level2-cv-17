@@ -4,10 +4,9 @@ from argparse import ArgumentParser
 
 import numpy as np
 import torch
-from tqdm import tqdm
-
 from dataset import make_dataloader
 from network import define_network
+from tqdm import tqdm
 from utils import add_hist, label_accuracy_score
 
 warnings.filterwarnings("ignore")
@@ -95,10 +94,8 @@ def validation(epoch, model, data_loader, criterion, device):
         ]
 
         avrg_loss = total_loss / cnt
-        print(
-            f"Validation #{epoch}  Average Loss: {round(avrg_loss.item(), 4)}, \
-                Accuracy : {round(acc, 4)}, mIoU: {round(mIoU, 4)}"
-        )
+        print(f"Validation #{epoch}  Average Loss: {round(avrg_loss.item(), 4)}, \
+                Accuracy : {round(acc, 4)}, mIoU: {round(mIoU, 4)}")
         print(f"IoU by class : {IoU_by_class}")
 
     return mIoU

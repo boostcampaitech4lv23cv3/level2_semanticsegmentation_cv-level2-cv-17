@@ -10,12 +10,12 @@ from mmseg.models import build_loss
 def test_use_sigmoid():
     # can't init with use_sigmoid=True
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', use_sigmoid=False)
+        loss_cfg = dict(type="FocalLoss", use_sigmoid=False)
         build_loss(loss_cfg)
 
     # can't forward with use_sigmoid=True
     with pytest.raises(NotImplementedError):
-        loss_cfg = dict(type='FocalLoss', use_sigmoid=True)
+        loss_cfg = dict(type="FocalLoss", use_sigmoid=True)
         focal_loss = build_loss(loss_cfg)
         focal_loss.use_sigmoid = False
         fake_pred = torch.rand(3, 4, 5, 6)
@@ -27,70 +27,71 @@ def test_use_sigmoid():
 def test_wrong_reduction_type():
     # can't init with wrong reduction
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', reduction='test')
+        loss_cfg = dict(type="FocalLoss", reduction="test")
         build_loss(loss_cfg)
 
     # can't forward with wrong reduction override
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss')
+        loss_cfg = dict(type="FocalLoss")
         focal_loss = build_loss(loss_cfg)
         fake_pred = torch.rand(3, 4, 5, 6)
         fake_target = torch.randint(0, 4, (3, 5, 6))
-        focal_loss(fake_pred, fake_target, reduction_override='test')
+        focal_loss(fake_pred, fake_target, reduction_override="test")
 
 
 # test focal loss can handle input parameters with
 # unacceptable types
 def test_unacceptable_parameters():
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', gamma='test')
+        loss_cfg = dict(type="FocalLoss", gamma="test")
         build_loss(loss_cfg)
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', alpha='test')
+        loss_cfg = dict(type="FocalLoss", alpha="test")
         build_loss(loss_cfg)
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', class_weight='test')
+        loss_cfg = dict(type="FocalLoss", class_weight="test")
         build_loss(loss_cfg)
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', loss_weight='test')
+        loss_cfg = dict(type="FocalLoss", loss_weight="test")
         build_loss(loss_cfg)
     with pytest.raises(AssertionError):
-        loss_cfg = dict(type='FocalLoss', loss_name=123)
+        loss_cfg = dict(type="FocalLoss", loss_name=123)
         build_loss(loss_cfg)
 
 
 # test if focal loss can be correctly initialize
 def test_init_focal_loss():
     loss_cfg = dict(
-        type='FocalLoss',
+        type="FocalLoss",
         use_sigmoid=True,
         gamma=3.0,
         alpha=3.0,
         class_weight=[1, 2, 3, 4],
-        reduction='sum')
+        reduction="sum",
+    )
     focal_loss = build_loss(loss_cfg)
     assert focal_loss.use_sigmoid is True
     assert focal_loss.gamma == 3.0
     assert focal_loss.alpha == 3.0
-    assert focal_loss.reduction == 'sum'
+    assert focal_loss.reduction == "sum"
     assert focal_loss.class_weight == [1, 2, 3, 4]
     assert focal_loss.loss_weight == 1.0
-    assert focal_loss.loss_name == 'loss_focal'
+    assert focal_loss.loss_name == "loss_focal"
 
 
 # test reduction override
 def test_reduction_override():
-    loss_cfg = dict(type='FocalLoss', reduction='mean')
+    loss_cfg = dict(type="FocalLoss", reduction="mean")
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 4, 5, 6)
     fake_target = torch.randint(0, 4, (3, 5, 6))
-    loss = focal_loss(fake_pred, fake_target, reduction_override='none')
+    loss = focal_loss(fake_pred, fake_target, reduction_override="none")
     assert loss.shape == fake_pred.shape
 
 
 # test wrong pred and target shape
 def test_wrong_pred_and_target_shape():
-    loss_cfg = dict(type='FocalLoss')
+    loss_cfg = dict(type="FocalLoss")
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 4, 5, 6)
     fake_target = torch.randint(0, 4, (3, 2, 2))
@@ -102,7 +103,7 @@ def test_wrong_pred_and_target_shape():
 
 # test forward with different shape of target
 def test_forward_with_different_shape_of_target():
-    loss_cfg = dict(type='FocalLoss')
+    loss_cfg = dict(type="FocalLoss")
     focal_loss = build_loss(loss_cfg)
 
     fake_pred = torch.rand(3, 4, 5, 6)
@@ -117,7 +118,7 @@ def test_forward_with_different_shape_of_target():
 
 # test forward with weight
 def test_forward_with_weight():
-    loss_cfg = dict(type='FocalLoss')
+    loss_cfg = dict(type="FocalLoss")
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 4, 5, 6)
     fake_target = torch.randint(0, 4, (3, 5, 6))
@@ -134,7 +135,7 @@ def test_forward_with_weight():
 
 # test none reduction type
 def test_none_reduction_type():
-    loss_cfg = dict(type='FocalLoss', reduction='none')
+    loss_cfg = dict(type="FocalLoss", reduction="none")
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 4, 5, 6)
     fake_target = torch.randint(0, 4, (3, 5, 6))
@@ -145,8 +146,9 @@ def test_none_reduction_type():
 # test the usage of class weight
 def test_class_weight():
     loss_cfg_cw = dict(
-        type='FocalLoss', reduction='none', class_weight=[1.0, 2.0, 3.0, 4.0])
-    loss_cfg = dict(type='FocalLoss', reduction='none')
+        type="FocalLoss", reduction="none", class_weight=[1.0, 2.0, 3.0, 4.0]
+    )
+    loss_cfg = dict(type="FocalLoss", reduction="none")
     focal_loss_cw = build_loss(loss_cfg_cw)
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 4, 5, 6)
@@ -159,14 +161,14 @@ def test_class_weight():
 
 # test ignore index
 def test_ignore_index():
-    loss_cfg = dict(type='FocalLoss', reduction='none')
+    loss_cfg = dict(type="FocalLoss", reduction="none")
     # ignore_index within C classes
     focal_loss = build_loss(loss_cfg)
     fake_pred = torch.rand(3, 5, 5, 6)
     fake_target = torch.randint(0, 4, (3, 5, 6))
-    dim1 = torch.randint(0, 3, (4, ))
-    dim2 = torch.randint(0, 5, (4, ))
-    dim3 = torch.randint(0, 6, (4, ))
+    dim1 = torch.randint(0, 3, (4,))
+    dim2 = torch.randint(0, 5, (4,))
+    dim3 = torch.randint(0, 6, (4,))
     fake_target[dim1, dim2, dim3] = 4
     loss1 = focal_loss(fake_pred, fake_target, ignore_index=4)
     one_hot_target = F.one_hot(fake_target, num_classes=5)
@@ -190,9 +192,9 @@ def test_ignore_index():
     # ignore index is not in prediction's classes
     fake_pred = torch.rand(3, 4, 5, 6)
     fake_target = torch.randint(0, 4, (3, 5, 6))
-    dim1 = torch.randint(0, 3, (4, ))
-    dim2 = torch.randint(0, 5, (4, ))
-    dim3 = torch.randint(0, 6, (4, ))
+    dim1 = torch.randint(0, 3, (4,))
+    dim2 = torch.randint(0, 5, (4,))
+    dim3 = torch.randint(0, 6, (4,))
     fake_target[dim1, dim2, dim3] = 255
     loss1 = focal_loss(fake_pred, fake_target, ignore_index=255)
     assert (loss1[dim1, :, dim2, dim3] == 0).all()
@@ -200,7 +202,7 @@ def test_ignore_index():
 
 # test list alpha
 def test_alpha():
-    loss_cfg = dict(type='FocalLoss')
+    loss_cfg = dict(type="FocalLoss")
     focal_loss = build_loss(loss_cfg)
     alpha_float = 0.4
     alpha = [0.4, 0.4, 0.4, 0.4]

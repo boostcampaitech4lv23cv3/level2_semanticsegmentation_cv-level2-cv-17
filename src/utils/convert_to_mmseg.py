@@ -22,6 +22,7 @@ Examples:
     $ python ./src/utils/convert_to_mmseg.py --coco-file val.json
     $ python ./src/utils/convert_to_mmseg.py --coco-file=test.json
 """
+
 import shutil
 from pathlib import Path
 
@@ -127,7 +128,9 @@ def create_masks(coco_json_path: Path, output_directory: Path) -> None:
 def main(
     coco_file: str = typer.Option("train.json", help="COCO annotation 파일명"),
     dataset_name: str = typer.Option("trash", help="데이터셋 이름"),
-    data_root: Path = typer.Option(DATA_ROOT, help="COCO annotation 파일이 위치한 디렉토리"),
+    data_root: Path = typer.Option(
+        DATA_ROOT, help="COCO annotation 파일이 위치한 디렉토리"
+    ),
     mmseg_data_dir: Path = typer.Option(
         MMSEG_DATA_ROOT, help="MMSegmentation에 맞게 변경하여 저장할 디렉토리"
     ),
